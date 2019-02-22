@@ -1,0 +1,37 @@
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /qsllogs/{syncId} {
+      function existSyncId() {
+        return exists(/databases/$(database)/documents/qsllogs/$(syncId));
+      }
+      allow get;
+      allow list: if false;
+      allow create: if !existSyncId();
+      allow update, delete: if existSyncId();
+      
+      match /{myCallsign}/{allChildren=**} {
+        function canWrite() {
+          return request.resource.data.his is string &&
+                 request.resource.data.his_op is string &&
+                 request.resource.data.his_qth is string &&
+                 request.resource.data.his_no is string &&
+                 request.resource.data.my_op is string &&
+                 request.resource.data.my_qth is string &&
+                 request.resource.data.my_no is string &&
+                 request.resource.data.mode in ["FM", "AM", "SSB", "CW"] &&
+                 request.resource.data.band is map &&
+                 request.resource.data.remarks is string &&
+                 request.resource.data.band.frequency is float &&
+                 request.resource.data.band.range in ["Hz", "kHz", "MHz", "GHz", "THz"];
+        }
+        function canCreate() {
+        	return exists(/databases/$(database)/documents/qsllogs/$(syncId)/qsls/$(myCallsign)) &&
+                 canWrite();
+        }
+        allow read;
+        allow update, delete: if canWrite();
+        allow create: if canCreate();
+      }
+    }
+  }
+}

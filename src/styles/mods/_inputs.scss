@@ -1,0 +1,25 @@
+.radio {
+  display: flex;
+  margin: 0.2rem 1rem;
+  width: calc(100% - 2rem);
+  justify-content: space-evenly;
+  flex-flow: column;
+
+  input {
+    &[type=text], &[type=number] {
+      appearance: none;
+      border: none;
+      border-bottom: solid 2px;
+      margin-top: 0.2rem;
+      text-align: center;
+
+      &::placeholder {
+        text-align: center;
+      }
+    }
+
+    &:invalid {
+      border: dashed 2px red;
+    }
+  }
+}

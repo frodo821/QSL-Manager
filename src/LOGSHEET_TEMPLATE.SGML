@@ -1,0 +1,18 @@
+<SUMMARYSHEET VERSION=R2.0>
+<CONTESTNAME>${contest_name}</CONTESTNAME>
+<CATEGORYCODE>${category}</CATEGORYCODE>
+<CALLSIGN>${callsign}</CALLSIGN>
+<TOTALSCORE>${totalscore}</TOTALSCORE>
+<ADDRESS>${address}</ADDRESS>
+<NAME>${name}</NAME>
+<TEL>${tellnum}</TEL>
+<EMAIL>${email}</EMAIL>
+<POWER>${power}</POWER>
+<COMMENTS>${comments}</COMMENTS>
+<OATH>私は、JARL制定のコンテスト規約および電波法令にしたがい運用した結果、ここに提出するサマリーシートおよびログシートなどが事実と相違ないものであることを、私の名誉において誓います。</OATH>
+<DATE>${contest_date}</DATE>
+<SIGNATURE>${signature}</SIGNATURE>
+</SUMMARYSHEET>
+<LOGSHEET TYPE=OnlineQSLManager@https://pages.tech-frodo.xyz/online-qsl-manager>
+${logs}
+</LOGSHEET>
