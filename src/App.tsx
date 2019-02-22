@@ -5,7 +5,12 @@ import './styles/app.scss';
 import { connectWith } from './datastore/store';
 import { QSL } from './datastore/types';
 
-type Props = State & ActionDispatcher;
+type IntrinsicState = {
+  contextMenuOpened?: boolean,
+  qslInEditing?: boolean;
+}
+
+type Props = State & ActionDispatcher & IntrinsicState;
 
 class App extends Component<Props> {
   my: React.RefObject<HTMLInputElement>;
