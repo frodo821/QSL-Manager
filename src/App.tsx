@@ -44,8 +44,8 @@ class App extends Component<Props> {
           <table className="qsl-table">
             <caption>QSL Logs</caption>
             <tbody>
-              <QSLRow />
-              {this.props.qsls.map(qsl=><QSLRow qsl={qsl} />)}
+              <QSLRow key={-1} num={-1} />
+              {this.props.qsls.map((qsl, idx)=><QSLRow qsl={qsl} key={idx} num={idx} editQSL={this.props.editQSL}/>)}
             </tbody>
           </table>
         </main>
@@ -115,12 +115,12 @@ class App extends Component<Props> {
     let index = parseInt(event.currentTarget.getAttribute('tabindex') || '');
     if(index !== index) return;
     if(index < 8) {
-      let next = document.querySelector(`input[tabindex=${index+1}]`) as HTMLElement | null;
+      let next = document.querySelector(`input[tabindex="${index+1}"]`) as HTMLElement | null;
       if(next)
         next.focus();
       return;
     }
-    let next = document.querySelector('input[tabindex=4]') as HTMLElement | null;
+    let next = document.querySelector('input[tabindex="4"]') as HTMLElement | null;
     this.onSubmitForm();
     if(next)
       next.focus();
@@ -223,7 +223,6 @@ class App extends Component<Props> {
             id="frequency"
             value={this.props.myqsl.band.frequency}
             minLength={2}
-            maxLength={3}
             onChange={this.changeBandFreq}/>
           <select
             id="freq-range"

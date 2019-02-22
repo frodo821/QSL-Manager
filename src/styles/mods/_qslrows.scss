@@ -27,5 +27,11 @@
         background: #e0f0e0;
       }
     }
+
+    .qsl-row {
+      input {
+        width: calc(100% - 1rem);
+      }
+    }
   }
 }
