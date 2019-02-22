@@ -102,11 +102,31 @@ class App extends Component<Props> {
       }));
     this.forceUpdate();
   }
+
+  dispatchKeydown = (event: React.KeyboardEvent<HTMLElement>) => {
+    if(event.key != "Enter") return;
+    if(event.ctrlKey)
+      return this.onSubmitForm();
+    let index = parseInt(event.currentTarget.getAttribute('tabindex') || '');
+    if(index !== index) return;
+    if(index < 8) {
+      let next = document.querySelector(`input[tabindex=${index+1}]`) as HTMLElement | null;
+      if(next)
+        next.focus();
+      return;
+    }
+    let next = document.querySelector('input[tabindex=4]') as HTMLElement | null;
+    this.onSubmitForm();
+    if(next)
+      next.focus();
+  }
 // #endregion
 
-  onSubmitForm = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    event.stopPropagation();
+  onSubmitForm = (event?: React.FormEvent<HTMLFormElement>) => {
+    if(event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
     let nqsl: QSL = Object.assign({
       my: (this.my.current || {value: ''}).value,
       my_qth: (this.my_qth.current || {value: ''}).value,
@@ -135,36 +155,59 @@ class App extends Component<Props> {
           <input
             type="text"
             onChange={this.changeMyCS}
+            onKeyDown={this.dispatchKeydown}
             value={this.props.myqsl.his}
+            autoFocus={true}
+            tabIndex={1}
             placeholder="His call sign (I sent)"
             pattern="(J[A-S]|[78][J-N])([0-9])([0-9A-Z]{2,3}(?:/[0-9])?)"/>
           <input
             type="text"
             onChange={this.changeMyQTH}
+            onKeyDown={this.dispatchKeydown}
+            tabIndex={1}
             value={this.props.myqsl.his_qth || ''}
             placeholder="His QTH (I sent)"/>
           <input
             type="text"
             onChange={this.changeMyOP}
+            onKeyDown={this.dispatchKeydown}
+            tabIndex={2}
             value={this.props.myqsl.his_op || ''}
             placeholder="His operator (I sent)"/>
           <input
             type="text"
             onChange={this.changeMyCnum}
+            onKeyDown={this.dispatchKeydown}
+            tabIndex={3}
             value={this.props.myqsl.his_no || ''}
             placeholder="His contest number (I sent)"
             pattern="[1-5][1-9]{1,2}\d{2}[K-N]"/>
           <input
             type="text"
             ref={this.my}
+            onKeyDown={this.dispatchKeydown}
+            tabIndex={4}
             placeholder="My call sign (he sent)"
             onChange={_=>{let it = (this.my.current||{value: ''});it.value = it.value.toUpperCase()}}
             pattern="(J[A-S]|[78][J-N])([0-9])([0-9A-Z]{2,3}(?:/[0-9])?)"/>
-          <input type="text" ref={this.my_qth} placeholder="My QTH (he sent)"/>
-          <input type="text" ref={this.my_op} placeholder="My operator (he sent)"/>
+          <input
+            type="text"
+            ref={this.my_qth}
+            onKeyDown={this.dispatchKeydown}
+            tabIndex={5}
+            placeholder="My QTH (he sent)"/>
+          <input
+            type="text"
+            ref={this.my_op}
+            onKeyDown={this.dispatchKeydown}
+            tabIndex={6}
+            placeholder="My operator (he sent)"/>
           <input
             type="text"
             ref={this.my_no}
+            onKeyDown={this.dispatchKeydown}
+            tabIndex={7}
             placeholder="My contest number (he sent)"
             pattern="[1-5][1-9]{1,2}\d{2}[K-N]"/>
         </div>
@@ -204,6 +247,8 @@ class App extends Component<Props> {
           type="text"
           id="remarks"
           placeholder="remarks"
+          onKeyDown={this.dispatchKeydown}
+          tabIndex={8}
           ref={this.remarks}/>
         <input type="submit" value="Add QSL"/>
       </form>)
