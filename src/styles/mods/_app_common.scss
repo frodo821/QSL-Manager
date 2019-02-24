@@ -1,0 +1,69 @@
+html {
+  background: #e2e4f0;
+}
+
+.App {
+  min-height: 100vh;
+}
+
+.app-header {
+  width: 100%;
+  overflow: auto;
+
+  .header-wrapper {
+    background: #152054;
+    color: #e2e4f0;
+    min-width: 100%;
+    width: max-content;
+    height: 2rem;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-evenly;
+    align-items: center;
+    overflow: auto;
+
+    * {
+      margin-left: 4px;
+    }
+
+    .logo {
+      font-weight: 800;
+      font-size: 120%;
+    }
+
+    .sync-button {
+      &.not-sync {
+        &::before {
+          content: "sync via cloud";
+        }
+      }
+      &.pending {
+        &::before {
+          content: "pending...";
+        }
+      }
+      &.synchronizing {
+        &::before {
+          content: "synchronizing";
+        }
+      }
+    }
+
+    #forms-toggle {
+      @include desktop {
+        display: none;
+      }
+      @include mobile {
+        label {
+          color: rgb(0, 255, 42);
+          height: 100%;
+          padding: 2px;
+        }
+
+        input:checked + label {
+          color: rgb(190, 190, 190);
+        }
+      }
+    }
+  }
+}
