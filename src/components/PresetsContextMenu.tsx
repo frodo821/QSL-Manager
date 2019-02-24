@@ -1,4 +1,4 @@
-import { Component } from "react";
+import React, { Component } from "react";
 import { Presets, BandPreset } from "../datastore/types";
 
 class PresetDetails extends Component<{preset: BandPreset}> {

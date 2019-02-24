@@ -104,8 +104,9 @@ function reducer(state:State | undefined, msg:Message): State {
       return state;
 
     case "RemoveQSL":
-      if(typeof msg.index !== 'undefined')
+      if(typeof msg.index !== 'undefined') {
         state.qsls.splice(msg.index, 1)
+      }
       return state;
     
     case "EditQSL":
@@ -133,8 +134,9 @@ function mapDispatchToProps(dispatch: Dispatch<Message>): ActionDispatcher {
   return {
     addQSL: (qsl: QSL) => dispatch({ type: "AddQSL", qsl }),
     editQSL: (index: number, qsl: QSL) => dispatch({ type: "EditQSL", index, qsl }),
-    removeQSL: (index: number) => dispatch({ type: "EditQSL", index }),
+    removeQSL: (index: number) => dispatch({ type: "RemoveQSL", index }),
     editQSLmy: (edited_my: QSLMy) => dispatch({type: "EditQSLMy", edited_my}),
+    syncQSLs: (qsls: QSL[]) => dispatch({type: "UpdateQSLs", qsls})
   }
 }
 
@@ -145,8 +147,8 @@ export const STORE = createStore(
       "",
       {
         key: "qsl-manager"
-      }
-    )));
+    })
+));
 
 export const connectWith = connect(
   (state: State)=>state,

@@ -8,18 +8,19 @@ export type Action
   | "UpdateQSLs"
 
 export type Message = {
-  type: Action
-  qsl?: QSL,
-  index?: number,
-  edited_my?: QSLMy,
-  qsls?: Array<QSL>,
-  force?: boolean
+  type: Action;
+  qsl?: QSL;
+  index?: number;
+  edited_my?: QSLMy;
+  qsls?: Array<QSL>;
+  force?: boolean;
 }
 
 export type State = {
-  myqsl: QSLMy,
-  qsls: Array<QSL>
-  band_presets: Presets
+  myqsl: QSLMy;
+  qsls: Array<QSL>;
+  band_presets: Presets;
+  syncId?: string;
 }
 
 export interface ActionDispatcher {
@@ -27,4 +28,5 @@ export interface ActionDispatcher {
   removeQSL(index: number): Message
   editQSL(index: number, qsl: QSL): Message
   editQSLmy(edited_my: QSLMy): Message
+  syncQSLs(qsls: QSL[]): Message
 }
