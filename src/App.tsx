@@ -22,6 +22,9 @@ type IntrinsicState = {
 
 type Props = State & ActionDispatcher;
 
+const APPNAME = "Online QSL Manager"
+const VERSION = "0.0.3a1"
+
 export class App extends Component<Props, IntrinsicState> {
   my: React.RefObject<HTMLInputElement>;
   my_qth: React.RefObject<HTMLInputElement>;
@@ -441,10 +444,18 @@ export class App extends Component<Props, IntrinsicState> {
             </div>
             {this.state.sync_state==="SYNCHRONIZING"?<div onClick={this.copyURL}>Sync room ID (click here to copy): {getSyncId()}</div>:null}
           </div>
-          <div className="log-download material-wrapper clickable" onClick={_=>downloadLogs(this.props.qsls)}>
-            download log as textfile<i className="material-icons">cloud_download</i>
+          <div className="settings-group" onClick={_=>downloadLogs(this.props.qsls)}>
+            <p className="log-download material-wrapper clickable">
+              download log as textfile<i className="material-icons">cloud_download</i>
+            </p>
+            <p>
+              <a href="http://contest.jarl.org/summarymaker.htm">And then, you can create log sheet here.</a>
+            </p>
           </div>
-          <a href="http://contest.jarl.org/summarymaker.htm">And then, you can create log sheet here.</a>
+          <div className="material-wrapper settings-group">
+            <i className="material-icons">info</i>
+            Version info: {APPNAME} v{VERSION}
+          </div>
         </div>
       </div>
     );
