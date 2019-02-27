@@ -11,3 +11,9 @@ $breakpoints: (
     'desktop': 'screen and (min-width: 961px)'
 ) !default;
 $grid-circle-radius: 25rem !default;
+
+$Z-BASE: 0 !default;
+$Z-FLOW: 2000 !default;
+$Z-DIALOG: 4000 !default;
+$Z-OVERLAY: 6000 !default;
+$Z-FRONT: 8000 !default;

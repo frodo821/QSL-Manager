@@ -5,7 +5,7 @@
   bottom: 0;
   right: 0;
   background: #1e1e1e55;
-  z-index: 2000;
+  z-index: $Z-DIALOG;
 
   & &-content {
     position: absolute;
@@ -14,6 +14,7 @@
     right: 10vw;
     min-height: 15rem;
     background: white;
+    padding: 1rem 2rem;
   }
 }
 
@@ -29,6 +30,12 @@
 
     &:hover {
       box-shadow: 2px 2px #1e1e1e55;
+    }
+  }
+
+  @include desktop {
+    #sync-room-id {
+      width: 24rem;
     }
   }
 }

@@ -1,0 +1,50 @@
+.settings {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  overflow: auto;
+  background: rgb(252, 245, 232);
+  display: flex;
+  z-index: $Z-DIALOG - 500;
+  text-align: center;
+  align-items: center;
+
+  & &-group {
+    margin-bottom: 0.4rem;
+  }
+
+  .app-header &-opener.material-icons.material-icons {
+    transition: 500ms;
+    top: 0;
+
+    &:hover {
+      transform: rotateZ(360deg);
+    }
+  }
+
+  & > &-wrapper {
+    min-width: 100%;
+    min-height: 100%;
+
+    h2 {
+      margin-top: -0.5rem;
+      border-bottom: 4px dotted rgb(100, 100, 100);
+    }
+
+    div {
+      cursor: pointer;
+    }
+
+    .close {
+      &:hover {
+        color: red;
+      }
+    }
+
+    .sync-button.material-wrapper {
+      @include noselect;
+    }
+  }
+}
