@@ -64,7 +64,7 @@ export async function initialize(appl: App, roomId?: string) {
         let index = findQSL(it.doc.id.replace('.', '/'));
         try{
           appl.props.dispatchMessage({
-            type: typeof index !== "undefined"&&it.type==="added"?"EditQSL":TYPE_DICT[it.type],
+            type: TYPE_DICT[it.type],
             index,
             qsl: Object.assign(qsl, {date: new Date(qsl.date)}),
             force: it.type==="modified",
@@ -94,19 +94,24 @@ function findQSL(my: string) {
 }
 
 async function updatable(qsl: QSL, doc: firebase.firestore.DocumentReference) {
-  let date = (await doc.get()).get('date') as string | null;
+  let date = (await doc.get()).get('date') as number | null;
   return !(date && new Date(date) < qsl.date);
 }
 
 export async function uploadAll() {
   let batcher = FS.room.firestore.batch();
-  for(let qsl of FS.application.props.qsls) {
-    let {my, ...other} = qsl;
-    if(!my) continue;
-    let md = FS.room.doc(my.replace('/', '.'));
-    if(typeof other.date === "object" && 'toISOString' in other.date)
-      (other as any).date = other.date.toISOString();
-    if(await updatable(qsl, md))
+  for(let qsl = 0; qsl < FS.application.props.qsls.length; qsl++) {
+    let tqsl = FS.application.props.qsls[qsl];
+    let {id, ...other} = tqsl;
+    let md;
+    if(id) {
+      md = FS.room.doc(id);
+    } else {
+      md = await FS.room.add({});
+      FS.application.props.editQSL(qsl, Object.assign({id: md.id}, other));
+    }
+    (other as any).date = other.date.valueOf();
+    if(await updatable(tqsl, md))
       batcher.set(md, other);
   }
 }
@@ -120,9 +125,8 @@ export async function fetchRemoteData() {
   let snapshot = await FS.room.get();
   return snapshot
     .docs
-    .map(it=>Object.assign(it.data(), {my: it.id}))
-    .map(it=>Object.assign(it, {date: new Date(it.date)}))
-    .map(it=>Object.assign(it, {my: it.my.replace('.', '/')}) as QSL)
+    .map(it=>Object.assign(it.data(), {id: it.id}))
+    .map(it=>Object.assign(it, {date: new Date(it.date)}) as QSL)
     .sort((a,b)=>a.date.valueOf() - b.date.valueOf());
 }
 
@@ -130,27 +134,20 @@ export async function uploadLocalData(msg: Message) {
   switch (msg.type) {
     case "EditQSL":
       msg.force = true;
-      if(msg.qsl && msg.index !== undefined){
-        let oldmy = FS.application.props.qsls[msg.index].my;
-        if(oldmy !== msg.qsl.my) {
-          let {my} = FS.application.props.qsls[msg.index];
-          await FS.room.doc(my.replace('/', '.')).delete();
-        }
-      }
     case "AddQSL":
       if(msg.qsl) {
-        let {my, ...other} = msg.qsl;
-        let md = FS.room.doc(my.replace('/', '.'));
+        let {id, ...other} = msg.qsl;
+        let md = FS.room.doc(id);
         if(msg.force || await updatable(msg.qsl, md)) {
-          (other as any).date = other.date.toISOString();
+          (other as any).date = other.date.valueOf();
           await md.set(other);
         }
       }
       break;
     case "RemoveQSL":
       if(msg.index !== undefined) {
-        let {my} = FS.application.props.qsls[msg.index];
-        await FS.room.doc(my.replace('/', '.')).delete();
+        let {id} = FS.application.props.qsls[msg.index];
+        await FS.room.doc(id).delete();
       }
       break;
     default:

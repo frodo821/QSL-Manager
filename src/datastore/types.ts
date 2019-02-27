@@ -35,6 +35,7 @@ export type QSLMy = {
 export type QSL = {
   my: string,
   date: Date,
+  id?: string,
   my_op?: string,
   my_qth?: string,
   my_no?: string,
