@@ -141,11 +141,11 @@ function reducer(state:State | undefined, msg:Message): State {
 
 function mapDispatchToProps(dispatch: Dispatch<Message>): ActionDispatcher {
   return {
-    addQSL: (qsl: QSL) => dispatch({ type: "AddQSL", qsl }),
-    editQSL: (index: number, qsl: QSL) => dispatch({ type: "EditQSL", index, qsl }),
-    removeQSL: (index: number) => dispatch({ type: "RemoveQSL", index }),
-    editQSLmy: (edited_my: QSLMy) => dispatch({type: "EditQSLMy", edited_my}),
-    syncQSLs: (qsls: QSL[]) => dispatch({type: "UpdateQSLs", qsls}),
+    addQSL: (qsl: QSL, initiator?: string) => dispatch({ type: "AddQSL", qsl, initiator}),
+    editQSL: (index: number, qsl: QSL, initiator?: string) => dispatch({ type: "EditQSL", index, qsl, initiator}),
+    removeQSL: (index: number, initiator?: string) => dispatch({ type: "RemoveQSL", index, initiator}),
+    editQSLmy: (edited_my: QSLMy, initiator?: string) => dispatch({type: "EditQSLMy", edited_my, initiator}),
+    syncQSLs: (qsls: QSL[], initiator?: string) => dispatch({type: "UpdateQSLs", qsls, initiator}),
     dispatchMessage: dispatch
   };
 }

@@ -25,10 +25,10 @@ export type State = {
 }
 
 export interface ActionDispatcher {
-  addQSL(qsl: QSL): Message
-  removeQSL(index: number): Message
-  editQSL(index: number, qsl: QSL): Message
-  editQSLmy(edited_my: QSLMy): Message
-  syncQSLs(qsls: QSL[]): Message
+  addQSL(qsl: QSL, initiator?: string): Message
+  removeQSL(index: number, initiator?: string): Message
+  editQSL(index: number, qsl: QSL, initiator?: string): Message
+  editQSLmy(edited_my: QSLMy, initiator?: string): Message
+  syncQSLs(qsls: QSL[], initiator?: string): Message
   dispatchMessage(msg: Message): Message
 }
