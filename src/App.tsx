@@ -23,7 +23,7 @@ type IntrinsicState = {
 type Props = State & ActionDispatcher;
 
 const APPNAME = "Online QSL Manager"
-const VERSION = "0.0.3a1"
+const VERSION = "0.0.3a2"
 
 export class App extends Component<Props, IntrinsicState> {
   my: React.RefObject<HTMLInputElement>;
