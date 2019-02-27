@@ -4,6 +4,8 @@ import { ActionDispatcher, State } from "./datastore/storetypes";
 import './styles/app.scss';
 import { connectWith } from './datastore/store';
 import { QSL } from './datastore/types';
+import { initialize, getSyncId, isConnected, syncRemoteData } from './datastore/sync';
+import { downloadLogs } from './logging';
 
 type IntrinsicState = {
   contextMenuOpened?: boolean;
@@ -13,13 +15,14 @@ type IntrinsicState = {
   };
   t_freq?: string;
   forms_hidden?: boolean;
-  sync_state?: "REQUESTED" | "SYNCHRONIZING"
-  attrs: {[key: string]: string}
+  sync_state?: "REQUESTED" | "SYNCHRONIZING";
+  settings?: boolean;
+  attrs: {[key: string]: string};
 }
 
 type Props = State & ActionDispatcher;
 
-class App extends Component<Props, IntrinsicState> {
+export class App extends Component<Props, IntrinsicState> {
   my: React.RefObject<HTMLInputElement>;
   my_qth: React.RefObject<HTMLInputElement>;
   my_op: React.RefObject<HTMLInputElement>;
@@ -28,10 +31,10 @@ class App extends Component<Props, IntrinsicState> {
   rad_mode: React.RefObject<HTMLSelectElement>;
   remarks: React.RefObject<HTMLInputElement>;
   my_no: React.RefObject<HTMLInputElement>;
+  msg_timeout?: any;
 
   constructor(props: Props) {
     super(props);
-    (window as any).app_root = this;
     this.my = React.createRef();
     this.my_qth = React.createRef();
     this.my_op = React.createRef();
@@ -52,12 +55,13 @@ class App extends Component<Props, IntrinsicState> {
     } else {
       this.state = {attrs: {}};
     }
+    (window as any).root = this;
   }
 
   componentDidMount() {
     let id = this.getSyncId();
-    console.log(id);
     if(id) {
+      initialize(this, id).then(_=>this.setState({sync_state: "SYNCHRONIZING"}));
     }
   }
 
@@ -69,7 +73,9 @@ class App extends Component<Props, IntrinsicState> {
 
   componentDidUpdate(_: Props, prev: IntrinsicState) {
     if(this.state.input_msg && prev.input_msg != this.state.input_msg) {
-      setTimeout(()=>{
+      if(this.msg_timeout !== undefined) clearTimeout(this.msg_timeout);
+
+      this.msg_timeout = setTimeout(()=>{
           this.setState({input_msg: undefined});
         }, 2500);
     }
@@ -92,7 +98,7 @@ class App extends Component<Props, IntrinsicState> {
   }
 
   changeMyCnum = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.props.editQSLmy(Object.assign(this.props.myqsl, {his_no: event.target.value}));
+    this.props.editQSLmy(Object.assign(this.props.myqsl, {his_no: event.target.value.toUpperCase()}));
     this.forceUpdate();
   }
 
@@ -152,12 +158,6 @@ class App extends Component<Props, IntrinsicState> {
     let form = document.getElementById('qsl-form') as HTMLFormElement | null;
     if(!form || form.checkValidity()) {
       this.onSubmitForm();
-      this.setState({
-        input_msg: {
-          content: "QSL log successfully registered.",
-          type: "info"
-        }
-      });
     } else {
       this.setState({
         input_msg: {
@@ -185,18 +185,21 @@ class App extends Component<Props, IntrinsicState> {
       }
     }
     let nqsl: QSL = Object.assign({
-      my: (this.my.current || {value: ''}).value,
+      my: (this.my.current || {value: ''}).value.toUpperCase(),
       my_qth: (this.my_qth.current || {value: ''}).value,
       my_op: (this.my_op.current || {value: ''}).value,
-      my_no: (this.my_no.current || {value: ''}).value,
+      my_no: (this.my_no.current || {value: ''}).value.toUpperCase(),
       remarks: (this.remarks.current || {value: ''}).value,
       date: new Date()
     }, this.props.myqsl);
     try{
+      let tmp: QSL | undefined;
+      if((tmp = this.props.qsls.find(it => it.my.split('/', 1)[0] === nqsl.my.split('/', 1)[0])))
+        throw `${nqsl.my} is alredy exists at ${tmp.date.toLocaleString()}`;
       this.props.addQSL(nqsl);
       this.setState({input_msg: {content: "QSL log successfully registered.", type: "info"}});
     }catch(e) {
-      this.setState({input_msg: {content: e, type: "error"}});
+      this.setState({input_msg: {content: e.toString(), type: "error"}});
       return;
     }
     (this.my.current || {value: ''}).value = '';
@@ -204,17 +207,29 @@ class App extends Component<Props, IntrinsicState> {
     (this.my_op.current || {value: ''}).value = '';
     (this.my_no.current || {value: ''}).value = '';
     (this.remarks.current || {value: ''}).value = '';
+    this.forceUpdate();
   }
 
   syncRequested = (_: React.MouseEvent<HTMLElement>) => {
-    if(typeof this.state.sync_state !== "undefined")
+    if(this.state.sync_state === "REQUESTED")
       return;
     this.setState({sync_state: "REQUESTED"});
   }
 
   startSync = () => {
-    let syncId = ((document.getElementById("sync-room-id") as HTMLInputElement | null) || {value: ''}).value
-    this.setState({sync_state: "SYNCHRONIZING"});
+    let syncId = ((document.getElementById("sync-room-id") as HTMLInputElement | null) || {value: ''}).value;
+    initialize(this, syncId).then(_=>this.setState({sync_state: "SYNCHRONIZING"}));
+  }
+
+  copyURL = (_: React.MouseEvent) => {
+    let input = document.createElement('input');
+    document.body.appendChild(input);
+    input.value = `https://pages.tech-frodo.xyz/#sync=${getSyncId()}`;
+    input.select();
+    document.execCommand('copy');
+    this.setState({input_msg: {content: "Sync URL Copied!", type: "info"}});
+    document.body.removeChild(input);
+    console.log(`copied: ${input.value}`);
   }
   // #endregion
 
@@ -222,6 +237,9 @@ class App extends Component<Props, IntrinsicState> {
   render() {
     return (
       <div className="App">
+        <div className={"messages "+(this.state.input_msg?this.state.input_msg.type:'hidden')}>
+          {this.state.input_msg?this.state.input_msg.content:null}
+        </div>
         {this.createHeader()}
         <main>
           <div className="table-wrapper">
@@ -240,7 +258,8 @@ class App extends Component<Props, IntrinsicState> {
             </table>
           </div>
         </main>
-        {this.state.sync_state==="REQUESTED"?this.createSyncDialog():null}
+        {this.state.sync_state==="REQUESTED"?!isConnected()?this.createSyncDialog():this.createUnsyncDialog():null}
+        {this.state.settings?this.createSettings():null}
         {!this.state.forms_hidden?this.createForm():null}
       </div>
     );
@@ -249,19 +268,17 @@ class App extends Component<Props, IntrinsicState> {
   createForm() {
     return (
       <form onSubmit={this.onSubmitForm} id="qsl-form">
-        <div className={"qsl-msg "+(this.state.input_msg?this.state.input_msg.type:'hidden')}>
-          {this.state.input_msg?this.state.input_msg.content:null}
-        </div>
         <div className="radio">
           <input
             required={true}
             type="text"
+            className="uppercased"
             onChange={this.changeMyCS}
             onKeyDown={this.dispatchKeydown}
             value={this.props.myqsl.his}
             tabIndex={1}
             placeholder="His call sign (I sent)"
-            pattern="(J[A-S]|[78][J-N])([0-9])([0-9A-Z]{2,3}(?:/[0-9])?)"/>
+            pattern="([Jj][A-Sa-s]|[78][J-Nj-n])([0-9])([0-9A-Za-z]{2,3}(?:/[0-9])?)"/>
           <input
             type="text"
             onChange={this.changeMyQTH}
@@ -281,18 +298,20 @@ class App extends Component<Props, IntrinsicState> {
             onChange={this.changeMyCnum}
             onKeyDown={this.dispatchKeydown}
             tabIndex={3}
+            className="uppercased"
             value={this.props.myqsl.his_no || ''}
             placeholder="His contest number (I sent)"
-            pattern="[1-5][1-9]{1,2}\d{2}[K-N]"/>
+            pattern="[1-5][1-9]{1,2}\d{2}[K-Nk-n]"/>
           <input
             required={true}
             type="text"
             ref={this.my}
             onKeyDown={this.dispatchKeydown}
             tabIndex={4}
+            className="uppercased"
             placeholder="My call sign (he sent)"
-            onChange={_=>{let it = (this.my.current||{value: ''});it.value = it.value.toUpperCase()}}
-            pattern="(J[A-S]|[78][J-N])([0-9])([0-9A-Z]{2,3}(?:/[0-9])?)"/>
+            onChange={_=>{let it = (this.my.current||{value: ''})}}
+            pattern="([Jj][A-Sa-s]|[78][J-Nj-n])([0-9])([0-9A-Za-z]{2,3}(?:/[0-9])?)"/>
           <input
             type="text"
             ref={this.my_qth}
@@ -310,8 +329,9 @@ class App extends Component<Props, IntrinsicState> {
             ref={this.my_no}
             onKeyDown={this.dispatchKeydown}
             tabIndex={7}
+            className="uppercased"
             placeholder="My contest number (he sent)"
-            pattern="[1-5][1-9]{1,2}\d{2}[K-N]"/>
+            pattern="[1-5][1-9]{1,2}\d{2}[K-Nk-n]"/>
         </div>
         <div className="rad-freq-mode">
           <input required={true}
@@ -359,7 +379,7 @@ class App extends Component<Props, IntrinsicState> {
           <div className="logo">
             Online QSL Manager
           </div>
-          <div id="forms-toggle">
+          <div id="forms-toggle" className="clickable">
             <input
               type="checkbox"
               id="forms-shown"
@@ -369,12 +389,41 @@ class App extends Component<Props, IntrinsicState> {
               {this.state.forms_hidden?"Open form":"Close form"}
             </label>
           </div>
-          <div className={
-            "sync-button "+
-            (this.state.sync_state?this.state.sync_state==="SYNCHRONIZING"?"synchronizing":"pending":"not-sync")}
-            onClick={this.syncRequested}></div>
+          <div
+            className="material-wrapper clickable"
+            onClick={_=>this.setState({settings: true})}>
+            <i className="material-icons settings-opener">settings</i>
+          </div>
         </div>
       </header>)
+  }
+
+  createSettings() {
+    return(
+      <div className="settings">
+        <div className="settings-wrapper">
+          <div
+            className="material-wrapper"
+            onClick={_=>this.setState({settings: false})}>
+            <i className="material-icons close">close</i>
+          </div>
+          <h2>Settings</h2>
+          <div className="settings-group">
+            <div className={
+            "sync-button material-wrapper clickable "+
+            (this.state.sync_state?this.state.sync_state==="SYNCHRONIZING"?"synchronizing":"pending":"not-sync")}
+            onClick={this.syncRequested}>
+              Sync via cloud: <i className="material-icons"></i>
+            </div>
+            {this.state.sync_state==="SYNCHRONIZING"?<div onClick={this.copyURL}>Sync room ID (click here to copy): {getSyncId()}</div>:null}
+          </div>
+          <div className="log-download material-wrapper clickable" onClick={_=>downloadLogs(this.props.qsls)}>
+            download log as textfile<i className="material-icons">cloud_download</i>
+          </div>
+          <a href="http://contest.jarl.org/summarymaker.htm">And then, you can create log sheet here.</a>
+        </div>
+      </div>
+    );
   }
 
   createSyncDialog() {
@@ -386,6 +435,16 @@ class App extends Component<Props, IntrinsicState> {
         <input type="text" placeholder="sync ID" id="sync-room-id"/>
         <button onClick={this.startSync}>Connect!</button>
         <button onClick={_=>this.setState({sync_state: undefined})}>Cancel</button>
+      </div>
+    </div>);
+  }
+  
+  createUnsyncDialog() {
+    return (<div className="dialog sync">
+      <div className="dialog-content">
+        <h2>Do you want to disconnect from sync room?</h2>
+        <button onClick={_=>{location.hash="",location.reload()}}>Yes, now</button>
+        <button onClick={_=>this.setState({sync_state: "SYNCHRONIZING"})}>No thanks</button>
       </div>
     </div>);
   }

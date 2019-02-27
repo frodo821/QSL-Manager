@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import persist from "redux-localstorage";
 import { Message, State, ActionDispatcher } from './storetypes';
 import { QSL, QSLMy, Presets } from "./types";
+import { isConnected, uploadLocalData } from "./sync";
 
 const DEFAULT_BAND_PLANS: Presets = {
   "135kHz Band (2220m)": {
@@ -88,41 +89,50 @@ const init: State = {
   band_presets: DEFAULT_BAND_PLANS
 }
 
+let prevState: State;
+
 function reducer(state:State | undefined, msg:Message): State {
   if(!state)
     state = init;
+
+  if(isConnected()&&msg.initiator !== "ONLINE_SYNC_EVENT") {
+    uploadLocalData(msg);
+    return state;
+  }
 
   switch (msg.type) {
     case "AddQSL":
       if(msg.qsl) {
         let qsl = msg.qsl;
         let tmp: Array<QSL>;
-        if(!msg.force && (tmp = state.qsls.filter(it => it.my.split('/', 1)[0] == qsl.my.split('/', 1)[0])).length != 0)
+        if(!msg.force && (tmp = state.qsls.filter(it => it.my.split('/', 1)[0] === qsl.my.split('/', 1)[0])).length)
           throw `${qsl.my} is alredy exists at ${tmp[0].date.toLocaleString()}`;
-        state.qsls.push(msg.qsl)
+        state.qsls.push(msg.qsl);
+        state.qsls = state.qsls.sort((a,b)=>a.date.valueOf() - b.date.valueOf());
       }
       return state;
 
     case "RemoveQSL":
       if(typeof msg.index !== 'undefined') {
-        state.qsls.splice(msg.index, 1)
+        state.qsls.splice(msg.index, 1);
       }
       return state;
     
     case "EditQSL":
-      if(typeof msg.index !== 'undefined' && msg.qsl)
-        state.qsls.splice(msg.index, 1, msg.qsl)
+      if(typeof msg.index !== 'undefined' && msg.qsl) {
+        state.qsls[msg.index] = msg.qsl;
+      }
       return state;
 
     case "EditQSLMy":
       if(msg.edited_my)
-        state.myqsl = msg.edited_my
+        state.myqsl = msg.edited_my;
       return state;
 
     case "UpdateQSLs":
       if(msg.qsls)
-        state.qsls = msg.qsls
-      return state
+        state.qsls = msg.qsls;
+      return state;
 
     default:
       return state;
@@ -130,14 +140,14 @@ function reducer(state:State | undefined, msg:Message): State {
 }
 
 function mapDispatchToProps(dispatch: Dispatch<Message>): ActionDispatcher {
-  console.log('dispatching');
   return {
     addQSL: (qsl: QSL) => dispatch({ type: "AddQSL", qsl }),
     editQSL: (index: number, qsl: QSL) => dispatch({ type: "EditQSL", index, qsl }),
     removeQSL: (index: number) => dispatch({ type: "RemoveQSL", index }),
     editQSLmy: (edited_my: QSLMy) => dispatch({type: "EditQSLMy", edited_my}),
-    syncQSLs: (qsls: QSL[]) => dispatch({type: "UpdateQSLs", qsls})
-  }
+    syncQSLs: (qsls: QSL[]) => dispatch({type: "UpdateQSLs", qsls}),
+    dispatchMessage: dispatch
+  };
 }
 
 export const STORE = createStore(
@@ -152,4 +162,4 @@ export const STORE = createStore(
 
 export const connectWith = connect(
   (state: State)=>state,
-  mapDispatchToProps)
+  mapDispatchToProps);

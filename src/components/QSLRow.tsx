@@ -11,17 +11,29 @@ interface QSLProps {
   deleteQSL?: (index: number) => Message;
 }
 
-interface OwnState {
+type CommomState = {
   editing?: "IN-EDITING" | "ERROR-IN-EDITING";
   vaild?: number;
   t_band?: string;
   contextMenu?: {x: number, y: number};
 }
 
+type BodyState = { pqsl: QSL };
+
+type HeadState = { pqsl: null };
+
+
+type OwnState = CommomState & (BodyState | HeadState);
+
+const isBodyState = (state: OwnState): state is BodyState => state.pqsl !== null
+
 class QSLRow extends Component<QSLProps, OwnState> {
+  constructor(props: QSLProps) {
+    super(props);
+    this.state = {pqsl: this.props.qsl?Object.assign({}, this.props.qsl):null} as OwnState;
+  }
   render() {
-    let qsl = this.props.qsl;
-    if(!qsl) {
+    if(!isBodyState(this.state)) {
       return(
         <tr className="qsl-row">
           <th className="date">Date</th>
@@ -39,15 +51,16 @@ class QSLRow extends Component<QSLProps, OwnState> {
         </tr>
       );
     }
+    let qsl = this.state.pqsl;
     qsl.date = new Date(qsl.date);
-    if(!this.state || !this.state.editing) {
+    if(!this.state.editing) {
       return (
         <tr
           className="qsl-row"
           onClick={this.onClick}
           onContextMenu={e=>(e.preventDefault(),this.setState({contextMenu: {x: e.pageX, y: e.pageY}}))}>
           <td className="date">{qsl.date.toLocaleDateString()}</td>
-          <td className="time">{qsl.date.toLocaleTimeString()}</td>
+          <td className="time">{(it=>`${it.getHours()}:${it.getMinutes()}`)(qsl.date)}</td>
           <td className="call-sign">{qsl.his}</td>
           <td className="qth">{qsl.his_qth || '-'}</td>
           <td className="op">{qsl.his_op || '-'}</td>
@@ -67,57 +80,57 @@ class QSLRow extends Component<QSLProps, OwnState> {
     return (
       <tr className={"qsl-row"+(this.state.editing==="ERROR-IN-EDITING"?" errored":"")} onKeyDown={this.onKeyDown}>
         <td className="date">{qsl.date.toLocaleDateString()}</td>
-        <td className="time">{qsl.date.toLocaleTimeString()}</td>
+        <td className="time">{(it=>`${it.getHours()}:${it.getMinutes()}`)(qsl.date)}</td>
         <td className="call-sign">
           <input
             type="text"
             value={qsl.his}
-            onChange={e=>(this.forceUpdate(),this.vaildate(e.target,0),this.props.qsl&&(this.props.qsl.his = e.target.value))}
+            onChange={e=>(this.forceUpdate(),this.vaildate(e.target,0),(this.state.pqsl as any).his = e.target.value)}
             pattern="(J[A-S]|[78][J-N])([0-9])([0-9A-Z]{2,3}(?:/[0-9])?)"/>
         </td>
         <td className="qth">
           <input
             type="text"
-            onChange={e=>(this.forceUpdate(),this.vaildate(e.target,1),this.props.qsl&&(this.props.qsl.his_qth = e.target.value))}
+            onChange={e=>(this.forceUpdate(),this.vaildate(e.target,1),(this.state.pqsl as any).his_qth = e.target.value)}
             value={qsl.his_qth || ''}/>
         </td>
         <td className="op">
           <input
             type="text"
-            onChange={e=>(this.forceUpdate(),this.vaildate(e.target,2),this.props.qsl&&(this.props.qsl.his_op = e.target.value))}
+            onChange={e=>(this.forceUpdate(),this.vaildate(e.target,2),(this.state.pqsl as any).his_op = e.target.value)}
             value={qsl.his_op || ''}/>
         </td>
         <td className="call-sign">
           <input
             type="text"
-            onChange={e=>(this.forceUpdate(),this.vaildate(e.target,3),this.props.qsl&&(this.props.qsl.my = e.target.value))}
+            onChange={e=>(this.forceUpdate(),this.vaildate(e.target,3),(this.state.pqsl as any).my = e.target.value)}
             pattern="(J[A-S]|[78][J-N])([0-9])([0-9A-Z]{2,3}(?:/[0-9])?)"
             value={qsl.my}/>
         </td>
         <td className="qth">
           <input
             type="text"
-            onChange={e=>(this.forceUpdate(),this.vaildate(e.target,4),this.props.qsl&&(this.props.qsl.my_qth = e.target.value))}
+            onChange={e=>(this.forceUpdate(),this.vaildate(e.target,4),(this.state.pqsl as any).my_qth = e.target.value)}
             value={qsl.my_qth || ''}/>
         </td>
         <td className="op">
           <input
             type="text"
-            onChange={e=>(this.forceUpdate(),this.vaildate(e.target,5),this.props.qsl&&(this.props.qsl.my_op = e.target.value))}
+            onChange={e=>(this.forceUpdate(),this.vaildate(e.target,5),(this.state.pqsl as any).my_op = e.target.value)}
             value={qsl.my_op || ''}/>
         </td>
         <th className="his-ctn">
           <input
             type="text"
             value={qsl.his_no || ''}
-            onChange={e=>(this.forceUpdate(),this.vaildate(e.target,6),this.props.qsl&&(this.props.qsl.his_no = e.target.value))}
+            onChange={e=>(this.forceUpdate(),this.vaildate(e.target,6),(this.state.pqsl as any).his_no = e.target.value)}
             pattern="[1-5][1-9]{1,2}\d{2}[K-N]"/>
         </th>
         <th className="my-ctn">
           <input
             type="text"
             value={qsl.my_no || ''}
-            onChange={e=>(this.forceUpdate(),this.vaildate(e.target,7),this.props.qsl&&(this.props.qsl.my_no = e.target.value))}
+            onChange={e=>(this.forceUpdate(),this.vaildate(e.target,7),(this.state.pqsl as any).my_no = e.target.value)}
             pattern="[1-5][1-9]{1,2}\d{2}[K-N]"/>
         </th>
         <td className="band">
@@ -130,7 +143,7 @@ class QSLRow extends Component<QSLProps, OwnState> {
         <td className="mode">
           <select
             id="rad-mode"
-            onChange={e=>(this.forceUpdate(),this.props.qsl&&(this.props.qsl.mode = e.target.value as RadioMode))}
+            onChange={e=>(this.forceUpdate(),(this.state.pqsl as any).mode = e.target.value as RadioMode)}
             value={qsl.mode}>
             <optgroup label="voice">
               <option>AM</option>
@@ -146,22 +159,12 @@ class QSLRow extends Component<QSLProps, OwnState> {
     );
   }
 
-  format() {
-    let qsl = this.props.qsl;
-    if(qsl) {
-      let his = (qsl.his_no || '').match(/([1-5][1-9]{1,2})(\d{2}[K-N])/);
-      let my = (qsl.my_no || '').match(/([1-5][1-9]{1,2})(\d{2}[K-N])/);
-      if(!my || !his) return '';
-      return `${qsl.date.toLocaleDateString()} ${qsl.date.toLocaleTimeString()} ${qsl.band.frequency} ${qsl.mode} ${qsl.his} ${his[1]} ${his[2]} ${my[1]} ${my[2]}\n`;
-    }
-  }
-
   vaildate(elem: HTMLInputElement, key: number) {
     let pattern = elem.getAttribute('pattern');
     if(pattern) {
       let m = elem.value.match(new RegExp(`^${pattern}$`));
       if(typeof this.state.vaild !== "undefined") {
-        if(m) {
+        if(m !== null) {
           this.setState({vaild: (1<<key)^this.state.vaild});
         } else {
           this.setState({vaild: (1<<key)|this.state.vaild});
@@ -182,8 +185,8 @@ class QSLRow extends Component<QSLProps, OwnState> {
     if(evt.key !== "Enter") return;
     if(!this.state.t_band && !this.state.vaild) {
       this.setState(() => ({editing: undefined}));
-      if(this.props.editQSL && this.props.qsl) {
-        this.props.editQSL(this.props.num, this.props.qsl);
+      if(this.props.editQSL && this.props.qsl && isBodyState(this.state)) {
+        this.props.editQSL(this.props.num, this.state.pqsl);
       }
     } else {
       this.setState(() => ({editing: "ERROR-IN-EDITING"}));

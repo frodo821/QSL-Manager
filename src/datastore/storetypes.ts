@@ -14,6 +14,7 @@ export type Message = {
   edited_my?: QSLMy;
   qsls?: Array<QSL>;
   force?: boolean;
+  initiator?: string;
 }
 
 export type State = {
@@ -29,4 +30,5 @@ export interface ActionDispatcher {
   editQSL(index: number, qsl: QSL): Message
   editQSLmy(edited_my: QSLMy): Message
   syncQSLs(qsls: QSL[]): Message
+  dispatchMessage(msg: Message): Message
 }
