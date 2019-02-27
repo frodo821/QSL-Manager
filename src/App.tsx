@@ -62,6 +62,13 @@ export class App extends Component<Props, IntrinsicState> {
     let id = this.getSyncId();
     if(id) {
       initialize(this, id).then(_=>this.setState({sync_state: "SYNCHRONIZING"}));
+    } else {
+      this.props.qsls.forEach((it, idx)=>{
+        if(it.id){
+          let {id, ...others} = it;
+          this.props.editQSL(idx, others);
+        }
+      })
     }
   }
 
@@ -147,6 +154,10 @@ export class App extends Component<Props, IntrinsicState> {
     if(event.ctrlKey)
       return this.onSubmitForm();
     let index = parseInt(event.currentTarget.getAttribute('tabindex') || '');
+    if(event.currentTarget === this.my.current) {
+      if(this.checkExists(event.currentTarget as HTMLInputElement))
+        return;
+    }
     if(index !== index) return;
     if(index < 8) {
       let next = document.querySelector(`input[tabindex="${index+1}"]`) as HTMLElement | null;
@@ -231,6 +242,19 @@ export class App extends Component<Props, IntrinsicState> {
     document.body.removeChild(input);
     console.log(`copied: ${input.value}`);
   }
+
+  onCheckExists = (e: React.ChangeEvent<HTMLInputElement>) => this.checkExists(e.target, false)
+
+  checkExists = (e: HTMLInputElement, focus: boolean = true) => {
+    let val = e.value.toUpperCase();
+    let tmp: QSL | undefined;
+    if((tmp = this.props.qsls.find(it => it.my.split('/', 1)[0] === val.split('/', 1)[0]))) {
+      this.setState({input_msg: {content: `${val} is alredy exists at ${tmp.date.toString()}`, type: "error"}});
+      if(focus) e.focus();
+      return true;
+    }
+    return false;
+  }
   // #endregion
 
 // #region Create virtual-DOMs
@@ -308,9 +332,9 @@ export class App extends Component<Props, IntrinsicState> {
             ref={this.my}
             onKeyDown={this.dispatchKeydown}
             tabIndex={4}
+            onBlur={this.onCheckExists}
             className="uppercased"
             placeholder="My call sign (he sent)"
-            onChange={_=>{let it = (this.my.current||{value: ''})}}
             pattern="([Jj][A-Sa-s]|[78][J-Nj-n])([0-9])([0-9A-Za-z]{2,3}(?:/[0-9])?)"/>
           <input
             type="text"
