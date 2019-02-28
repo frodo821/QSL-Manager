@@ -6,6 +6,7 @@ import { connectWith } from './datastore/store';
 import { QSL } from './datastore/types';
 import { initialize, getSyncId, isConnected, syncRemoteData } from './datastore/sync';
 import { downloadLogs } from './logging';
+import manager from './parameter';
 
 type IntrinsicState = {
   contextMenuOpened?: boolean;
@@ -17,7 +18,6 @@ type IntrinsicState = {
   forms_hidden?: boolean;
   sync_state?: "REQUESTED" | "SYNCHRONIZING";
   settings?: boolean;
-  attrs: {[key: string]: string};
 }
 
 type Props = State & ActionDispatcher;
@@ -46,18 +46,6 @@ export class App extends Component<Props, IntrinsicState> {
     this.rad_mode = React.createRef();
     this.remarks = React.createRef();
     this.my_no = React.createRef();
-    if(location.hash) {
-      let attrs = Object.assign({}, ...(
-        location.hash
-                .slice(1)
-                .split('&')
-                .map(i=>i.split('='))
-                .map(i=>({[i[0]]: i[1]}))
-        )) as {[key: string]: string};
-      this.state = {attrs}
-    } else {
-      this.state = {attrs: {}};
-    }
     (window as any).root = this;
   }
 
@@ -76,9 +64,9 @@ export class App extends Component<Props, IntrinsicState> {
   }
 
   getSyncId() : string | null {
-    if(!this.state.attrs.hasOwnProperty('sync'))
+    if(!manager.hasOwnProperty('sync'))
       return null;
-    return this.state.attrs.sync;
+    return manager.sync;
   }
 
   componentDidUpdate(_: Props, prev: IntrinsicState) {
@@ -478,7 +466,7 @@ export class App extends Component<Props, IntrinsicState> {
     return (<div className="dialog sync">
       <div className="dialog-content">
         <h2>Do you want to disconnect from sync room?</h2>
-        <button onClick={_=>{location.hash="",location.reload()}}>Yes, now</button>
+        <button onClick={_=>{delete manager.sync&&location.reload()}}>Yes, now</button>
         <button onClick={_=>this.setState({sync_state: "SYNCHRONIZING"})}>No thanks</button>
       </div>
     </div>);

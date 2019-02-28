@@ -4,6 +4,7 @@ import config from './.firebase-config'
 import { Message } from "./storetypes";
 import { App } from "../App";
 import { QSL } from "./types";
+import manager from '../parameter';
 
 const APP_NAME = "online-qsl-manager-web-client";
 
@@ -92,7 +93,7 @@ export async function initialize(appl: App, roomId?: string) {
     error: console.error
   });
 
-  location.hash = `#sync=${getSyncId()}`;
+  manager.sync = getSyncId();
   await uploadAll();
 }
 
