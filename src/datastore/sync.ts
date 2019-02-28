@@ -5,6 +5,7 @@ import { Message } from "./storetypes";
 import { App } from "../App";
 import { QSL } from "./types";
 import manager from '../parameter';
+import { tl } from "../multilingual";
 
 const APP_NAME = "online-qsl-manager-web-client";
 
@@ -51,7 +52,7 @@ export async function initialize(appl: App, roomId?: string) {
     col = database.collection('syncRooms').doc(roomId);
     let doc = await col.get();
     if(!doc.exists) {
-      let content = `Could not sync via cloud: unknown sync room ID '${roomId}'`;
+      let content = `${tl("Could not sync via cloud")}: unknown sync room ID '${roomId}'`;
       appl.setState({
         input_msg: {
           content,
@@ -124,7 +125,6 @@ export async function uploadAll() {
     }
   }
   await batcher.commit();
-  console.log('All cached data uploaded');
 }
 
 export async function syncRemoteData() {
