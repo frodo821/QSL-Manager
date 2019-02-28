@@ -1,14 +1,19 @@
 import { Translation } from "./types";
-import './languages';
 
-const languages = {} as {[key: string]: Translation}
+const languageTable: {[key: string]: Translation} = {
+  en_US: {} as Translation
+}
 
 var language = "en_US"
 
 const DEBUG = true;
 
+export async function initialize() {
+  await import('./languages');
+}
+
 export function changeLanguage(lang: string) {
-  if(!languages.hasOwnProperty(lang))
+  if(!languageTable.hasOwnProperty(lang))
     language = "en_US"
   else
     language = lang
@@ -18,9 +23,9 @@ export function tl(target: string) {
   if(language === "en_US")
     return target;
 
-  let ld = languages[language];
+  let ld = languageTable[language];
 
-  if(!ld.trans.hasOwnProperty(target)) {
+  if(!ld || !ld.trans.hasOwnProperty(target)) {
     DEBUG&&console.warn(`'${target}' is not translated in '${language}'`)
     return target;
   }
@@ -30,13 +35,13 @@ export function tl(target: string) {
 export function getCountry() {
   if(language === "en_US")
     return "United States"
-  return languages[language].country;
+  return languageTable[language].country;
 }
 
 export function getLanguage() {
   if(language === "en_US")
     return "English"
-  return languages[language].language;
+  return languageTable[language].language;
 }
 
 export function currentLang() {
@@ -44,11 +49,11 @@ export function currentLang() {
 }
 
 export function addLanguage(lang: Translation, key: string) {
-  if(!languages.hasOwnProperty(key)) {
-    languages[key] = lang;
+  if(!languageTable.hasOwnProperty(key)) {
+    languageTable[key] = lang;
   }
 }
 
 export function listupLanguageVariant() {
-  return ['en_US'].concat(Object.keys(languages));
+  return Object.keys(languageTable);
 }
