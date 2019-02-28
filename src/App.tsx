@@ -446,7 +446,7 @@ export class App extends Component<Props, IntrinsicState> {
           </div>
           <div className="settings-group">
             <label htmlFor="choose-language">{tl("Choose language")}:</label>
-            <select id="choose-language">
+            <select id="choose-language" onChange={e=>{changeLanguage(e.target.value),manager.lang=e.target.value}}>
               {listupLanguageVariant().map(it=><option selected={currentLang()===it}>{it}</option>)}
             </select>
           </div>
