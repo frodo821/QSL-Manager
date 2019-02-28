@@ -26,24 +26,6 @@
       text-align: center;
     }
 
-    .qsl-row:nth-child(even) {
-      > :nth-child(even) {
-        background: #90c090;
-      }
-      > :nth-child(odd) {
-        background: #a0e0a0;
-      }
-    }
-
-    .qsl-row:nth-child(odd) {
-      > :nth-child(even) {
-        background: #c0f0c0;
-      }
-      > :nth-child(odd) {
-        background: #e0f0e0;
-      }
-    }
-
     .qsl-row {
       cursor: pointer;
 
@@ -52,6 +34,24 @@
       }
       &.errored {
         outline: dashed 4px red;
+      }
+
+      &:nth-child(even) {
+        > :nth-child(even) {
+          background: #90c090;
+        }
+        > :nth-child(odd) {
+          background: #a0e0a0;
+        }
+      }
+
+      &:nth-child(odd) {
+        > :nth-child(even) {
+          background: #c0f0c0;
+        }
+        > :nth-child(odd) {
+          background: #e0f0e0;
+        }
       }
     }
   }
