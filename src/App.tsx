@@ -7,7 +7,7 @@ import { QSL } from './datastore/types';
 import { initialize, getSyncId, isConnected } from './datastore/sync';
 import { downloadLogs } from './logging';
 import manager from './parameter';
-import { tl, changeLanguage, listupLanguageVariant, currentLang } from './multilingual';
+import { tl, changeLanguage, listupLanguageVariant, currentLang, initialize as lang_init } from './multilingual';
 
 type IntrinsicState = {
   contextMenuOpened?: boolean;
@@ -39,6 +39,7 @@ export class App extends Component<Props, IntrinsicState> {
 
   constructor(props: Props) {
     super(props);
+    this.state = {};
     this.my = React.createRef();
     this.my_qth = React.createRef();
     this.my_op = React.createRef();
@@ -48,6 +49,13 @@ export class App extends Component<Props, IntrinsicState> {
     this.remarks = React.createRef();
     this.my_no = React.createRef();
     (window as any).root = this;
+    lang_init().then(_=>{  
+      let lang = manager.lang || '';
+      if(lang) {
+        changeLanguage(lang);
+        this.forceUpdate();
+      }
+    });
   }
 
   componentDidMount() {
@@ -61,10 +69,6 @@ export class App extends Component<Props, IntrinsicState> {
           this.props.editQSL(idx, others);
         }
       });
-    }
-    let lang = manager.lang || '';
-    if(lang) {
-      changeLanguage(lang);
     }
   }
 
@@ -446,8 +450,11 @@ export class App extends Component<Props, IntrinsicState> {
           </div>
           <div className="settings-group">
             <label htmlFor="choose-language">{tl("Choose language")}:</label>
-            <select id="choose-language" onChange={e=>{changeLanguage(e.target.value),manager.lang=e.target.value}}>
-              {listupLanguageVariant().map(it=><option selected={currentLang()===it}>{it}</option>)}
+            <select
+              id="choose-language"
+              defaultValue={currentLang()}
+              onChange={e=>{changeLanguage(e.target.value),manager.lang=e.target.value,this.forceUpdate()}}>
+              {listupLanguageVariant().map((it,i)=><option key={i}>{it}</option>)}
             </select>
           </div>
           <div className="material-wrapper settings-group">
