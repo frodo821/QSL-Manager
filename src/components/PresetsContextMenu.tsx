@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import { Presets, BandPreset } from "../datastore/types";
+import { tl } from "../multilingual";
 
 class PresetDetails extends Component<{preset: BandPreset}> {
   render() {
     return (
       <div className="preset-detail">
         <div className="band">{this.props.preset.frequency}{this.props.preset.range}</div>
-        <div className="remarks">{this.props.preset.remarks || "Remarks are not provided."}</div>
+        <div className="remarks">{tl(this.props.preset.remarks || "Remarks are not provided.")}</div>
       </div>);
   }
 }
@@ -36,7 +37,7 @@ class PresetsContextMenu extends Component<{presets: Presets}> {
   render() {
     return (
       <div className="context-menu">
-        <div className="title">Available presets</div>
+        <div className="title">{tl("Available presets")}</div>
         <div className="available-presets">
           {Object.keys(this.props.presets)
                  .map(k=>({key: k, preset: this.props.presets[k]}))

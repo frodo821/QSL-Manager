@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { QSL, RadioMode, BandRange } from '../datastore/types'
 import { Message } from '../datastore/storetypes';
 import QSLRowContextMenu from './QSLRowContextMenu';
+import { tl } from '../multilingual';
 
 interface QSLProps {
   qsl?: QSL;
@@ -36,18 +37,18 @@ class QSLRow extends Component<QSLProps, OwnState> {
     if(!isBodyState(this.state)) {
       return(
         <tr className="qsl-row">
-          <th className="date">Date</th>
-          <th className="time">Time</th>
-          <th className="call-sign">His Callsign</th>
-          <th className="qth">His QTH</th>
-          <th className="op">His Operator</th>
-          <th className="call-sign">My Callsign</th>
-          <th className="qth">My QTH</th>
-          <th className="op">My Operator</th>
-          <th className="his-ctn">His RST/Context Number</th>
-          <th className="my-ctn">My RST/Context Number</th>
-          <th className="band">Band</th>
-          <th className="mode">Mode</th>
+          <th className="date">{tl("Date")}</th>
+          <th className="time">{tl("Time")}</th>
+          <th className="call-sign">{tl("His Callsign")}</th>
+          <th className="qth">{tl("His QTH")}</th>
+          <th className="op">{tl("His Operator")}</th>
+          <th className="call-sign">{tl("My Callsign")}</th>
+          <th className="qth">{tl("My QTH")}</th>
+          <th className="op">{tl("My Operator")}</th>
+          <th className="his-ctn">{tl("His RST/Context Number")}</th>
+          <th className="my-ctn">{tl("My RST/Context Number")}</th>
+          <th className="band">{tl("Band")}</th>
+          <th className="mode">{tl("Mode")}</th>
         </tr>
       );
     }
@@ -177,7 +178,7 @@ class QSLRow extends Component<QSLProps, OwnState> {
 
   remove = () => {
     if(!this.props.deleteQSL) return;
-    if(!confirm("Are you sure to delete this log?")) return;
+    if(!confirm(tl("Are you sure to delete this log?"))) return;
     this.props.deleteQSL(this.props.num);
   }
 

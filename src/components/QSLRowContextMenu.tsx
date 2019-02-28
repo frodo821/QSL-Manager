@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import QSLRow from "./QSLRow";
+import { tl } from "../multilingual";
 
 interface Props {
   row: QSLRow
@@ -21,12 +22,12 @@ class QSLRowContextMenu extends Component<Props> {
           <p
             onPointerDown={e=>e.stopPropagation()}
             onClick={e=>(e.stopPropagation(),this.props.row.remove(),this.close())}>
-            Delete
+            {tl("Delete")}
           </p>
           <p
             onPointerDown={e=>e.stopPropagation()}
             onClick={e=>(e.stopPropagation(),this.props.row.setState({editing: "IN-EDITING"}),this.close())}>
-            Edit
+            {tl("Edit")}
           </p>
         </div>
       </div>);
