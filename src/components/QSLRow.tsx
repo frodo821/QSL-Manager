@@ -58,8 +58,7 @@ class QSLRow extends Component<QSLProps, OwnState> {
       return (
         <tr
           className="qsl-row"
-          onClick={this.onClick}
-          onContextMenu={e=>(e.preventDefault(),this.setState({contextMenu: {x: e.pageX, y: e.pageY}}))}>
+          onClick={this.onClick}>
           <td className="date">{qsl.date.toLocaleDateString()}</td>
           <td className="time">{(it=>`${it.getHours()}:${it.getMinutes()}`)(qsl.date)}</td>
           <td className="call-sign">{qsl.his}</td>
@@ -199,8 +198,7 @@ class QSLRow extends Component<QSLProps, OwnState> {
   onClick = (evt: React.MouseEvent<HTMLElement, MouseEvent>) => {
     evt.preventDefault();
     evt.stopPropagation();
-    (window as any).editing = this;
-    this.setState(() => ({editing: "IN-EDITING"}));
+    this.setState({contextMenu: {x: evt.pageX, y: evt.pageY}});
   }
 
   onBandChanged = (evt: React.ChangeEvent<HTMLInputElement>) => {
