@@ -189,6 +189,11 @@ class QSLRow extends Component<QSLProps, OwnState> {
     this.props.deleteQSL(this.props.num);
   }
 
+  updateRemarkes = (new_remarks: string) => {
+    if(this.state.pqsl && this.props.editQSL)
+      this.props.editQSL(this.props.num, Object.assign(this.state.pqsl, {remarks: new_remarks}));
+  }
+
   onKeyDown = (evt: React.KeyboardEvent<HTMLElement>) => {
     if(evt.key !== "Enter") return;
     if(!this.state.t_band && !this.state.vaild) {
