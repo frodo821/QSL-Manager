@@ -49,8 +49,8 @@ class QSLRowContextMenu extends Component<Props, State> {
   }
 
   getStyle() {
-    if(getComputedStyle(document.body).getPropertyValue("--is-mobile") === "yes") {
-      return {};
+    if(getComputedStyle(document.body).getPropertyValue("--is-mobile").trim() === "yes") {
+      return;
     }
     return {left: this.props.pos.x, top: this.props.pos.y};
   }
