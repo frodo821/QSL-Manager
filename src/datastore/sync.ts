@@ -52,7 +52,7 @@ export async function initialize(appl: App, roomId?: string) {
     col = database.collection('syncRooms').doc(roomId);
     let doc = await col.get();
     if(!doc.exists) {
-      let content = `${tl("Could not sync via cloud")}: unknown sync room ID '${roomId}'`;
+      let content = tl("Could not sync via cloud: unknown sync room ID {}", [roomId]);
       appl.setState({
         input_msg: {
           content,
