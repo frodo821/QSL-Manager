@@ -61,7 +61,9 @@ export class App extends Component<Props, IntrinsicState> {
   componentDidMount() {
     let id = this.getSyncId();
     if(id) {
-      initialize(this, id).then(_=>this.setState({sync_state: "SYNCHRONIZING"}));
+      initialize(this, id)
+        .then(_=>this.setState({sync_state: "SYNCHRONIZING"}))
+        .catch(_=>{});
     } else {
       this.props.qsls.forEach((it, idx)=>{
         if(it.id){
@@ -206,7 +208,7 @@ export class App extends Component<Props, IntrinsicState> {
     try{
       let tmp: QSL | undefined;
       if((tmp = this.props.qsls.find(it => it.my.split('/', 1)[0] === nqsl.my.split('/', 1)[0])))
-        throw `${nqsl.my} is alredy exists at ${tmp.date.toLocaleString()}`;
+        throw tl("{} is alredy exists at {}", [nqsl.my, tmp.date.toLocaleString()]);
       this.props.addQSL(nqsl);
       this.setState({input_msg: {content: tl("QSL log successfully registered."), type: "info"}});
     }catch(e) {
@@ -454,7 +456,7 @@ export class App extends Component<Props, IntrinsicState> {
               id="choose-language"
               defaultValue={currentLang()}
               onChange={e=>{changeLanguage(e.target.value),manager.lang=e.target.value,this.forceUpdate()}}>
-              {listupLanguageVariant().map((it,i)=><option key={i}>{it}</option>)}
+              {listupLanguageVariant().map(it=><option key={it.value} value={it.value}>{it.lang}</option>)}
             </select>
           </div>
           <div className="material-wrapper settings-group">

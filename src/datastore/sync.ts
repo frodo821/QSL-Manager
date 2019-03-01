@@ -34,7 +34,7 @@ export function getSyncId() {
 }
 
 export async function initialize(appl: App, roomId?: string) {
-  if(initializing) return;
+  if(initializing) throw "already initializing.";
   initializing = true;
 
   let app: firebase.app.App | undefined;
@@ -59,6 +59,7 @@ export async function initialize(appl: App, roomId?: string) {
           type: "error"
         }
       });
+      initializing = false;
       throw content;
     }
   } else {
