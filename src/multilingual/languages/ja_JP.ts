@@ -34,7 +34,9 @@ const ja_JP = {
     "Version info": "バージョン情報",
     "{} is alredy exists at {}": "{}は{}に既に登録済みです!",
     "Could not sync via cloud: unknown sync room ID {}": "同期できませんでした。理由: 不明な同期ID {}",
-    "Show remarks": "備考を表示"
+    "Show remarks": "備考を表示",
+    "Delete": "削除",
+    "Edit": "編集"
   },
   language: "日本語",
   country: "日本"
