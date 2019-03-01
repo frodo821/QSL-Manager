@@ -250,7 +250,7 @@ export class App extends Component<Props, IntrinsicState> {
     let val = e.value.toUpperCase();
     let tmp: QSL | undefined;
     if((tmp = this.props.qsls.find(it => it.my.split('/', 1)[0] === val.split('/', 1)[0]))) {
-      this.setState({input_msg: {content: `${val} is alredy exists at ${tmp.date.toString()}`, type: "error"}});
+      this.setState({input_msg: {content:  tl("{} is alredy exists at {}", [val, tmp.date.toLocaleString()]), type: "error"}});
       if(focus) e.focus();
       return true;
     }
