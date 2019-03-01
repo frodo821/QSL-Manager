@@ -48,6 +48,23 @@ class QSLRowContextMenu extends Component<Props, State> {
     return {left: this.props.pos.x, top: this.props.pos.y};
   }
 
+  showRemarks() {
+    return (
+      <div className="dialog">
+        <div className="dialog-content">
+          <div>
+            <i className="material-icons"
+               onClick={e=>this.setState({remarks: false})}>close</i>
+          </div>
+          <h2>{tl("remarks")}</h2>
+          <p>{(this.props.row.state.pqsl||{remarks:''}).remarks}</p>
+          <div>
+            <i className="material-icons">edit</i>
+          </div>
+        </div>
+      </div>)
+  }
+
   close() { this.props.row.setState({contextMenu: undefined}) }
 }
 
