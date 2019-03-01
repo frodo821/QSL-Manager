@@ -86,24 +86,28 @@ class QSLRow extends Component<QSLProps, OwnState> {
             type="text"
             value={qsl.his}
             onChange={e=>(this.forceUpdate(),this.vaildate(e.target,0),(this.state.pqsl as any).his = e.target.value)}
+            onKeyUp={e=>this.vaildate(e.currentTarget,0)}
             pattern="(J[A-S]|[78][J-N])([0-9])([0-9A-Z]{2,3}(?:/[0-9])?)"/>
         </td>
         <td className="qth">
           <input
             type="text"
             onChange={e=>(this.forceUpdate(),this.vaildate(e.target,1),(this.state.pqsl as any).his_qth = e.target.value)}
+            onKeyUp={e=>this.vaildate(e.currentTarget,1)}
             value={qsl.his_qth || ''}/>
         </td>
         <td className="op">
           <input
             type="text"
             onChange={e=>(this.forceUpdate(),this.vaildate(e.target,2),(this.state.pqsl as any).his_op = e.target.value)}
+            onKeyUp={e=>this.vaildate(e.currentTarget,2)}
             value={qsl.his_op || ''}/>
         </td>
         <td className="call-sign">
           <input
             type="text"
             onChange={e=>(this.forceUpdate(),this.vaildate(e.target,3),(this.state.pqsl as any).my = e.target.value)}
+            onKeyUp={e=>this.vaildate(e.currentTarget,3)}
             pattern="(J[A-S]|[78][J-N])([0-9])([0-9A-Z]{2,3}(?:/[0-9])?)"
             value={qsl.my}/>
         </td>
@@ -111,12 +115,14 @@ class QSLRow extends Component<QSLProps, OwnState> {
           <input
             type="text"
             onChange={e=>(this.forceUpdate(),this.vaildate(e.target,4),(this.state.pqsl as any).my_qth = e.target.value)}
+            onKeyUp={e=>this.vaildate(e.currentTarget,4)}
             value={qsl.my_qth || ''}/>
         </td>
         <td className="op">
           <input
             type="text"
             onChange={e=>(this.forceUpdate(),this.vaildate(e.target,5),(this.state.pqsl as any).my_op = e.target.value)}
+            onKeyUp={e=>this.vaildate(e.currentTarget,5)}
             value={qsl.my_op || ''}/>
         </td>
         <th className="his-ctn">
@@ -124,6 +130,7 @@ class QSLRow extends Component<QSLProps, OwnState> {
             type="text"
             value={qsl.his_no || ''}
             onChange={e=>(this.forceUpdate(),this.vaildate(e.target,6),(this.state.pqsl as any).his_no = e.target.value)}
+            onKeyUp={e=>this.vaildate(e.currentTarget,6)}
             pattern="[1-5][1-9]{1,2}\d{2}[K-N]"/>
         </th>
         <th className="my-ctn">
@@ -131,6 +138,7 @@ class QSLRow extends Component<QSLProps, OwnState> {
             type="text"
             value={qsl.my_no || ''}
             onChange={e=>(this.forceUpdate(),this.vaildate(e.target,7),(this.state.pqsl as any).my_no = e.target.value)}
+            onKeyUp={e=>this.vaildate(e.currentTarget,7)}
             pattern="[1-5][1-9]{1,2}\d{2}[K-N]"/>
         </th>
         <td className="band">
