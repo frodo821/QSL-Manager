@@ -194,7 +194,13 @@ class QSLRow extends Component<QSLProps, OwnState> {
     if(!this.state.t_band && !this.state.vaild) {
       this.setState(() => ({editing: undefined}));
       if(this.props.editQSL && this.props.qsl && isBodyState(this.state)) {
-        this.props.editQSL(this.props.num, this.state.pqsl);
+        let qsl = Object.assign(this.state.pqsl, {
+          my: this.state.pqsl.my.toUpperCase(),
+          his: this.state.pqsl.his.toUpperCase(),
+          my_no: (this.state.pqsl.my_no||'').toUpperCase(),
+          his_no: (this.state.pqsl.his_no||'').toUpperCase()
+        }) as QSL;
+        this.props.editQSL(this.props.num, qsl);
       }
     } else {
       this.setState(() => ({editing: "ERROR-IN-EDITING"}));

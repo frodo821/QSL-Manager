@@ -31,6 +31,10 @@
 
       input {
         width: calc(100% - 1rem);
+        text-transform: uppercase;
+        &::placeholder {
+          text-transform: none;
+        }
       }
       &.errored {
         outline: dashed 4px red;
