@@ -9,13 +9,15 @@ interface Props {
 
 interface State {
   remarks: boolean;
+  editing_remarks: boolean;
 }
 
 class QSLRowContextMenu extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      remarks: false
+      remarks: false,
+      editing_remarks: false
     };
   }
 
@@ -44,7 +46,7 @@ class QSLRowContextMenu extends Component<Props, State> {
             {tl("Show remarks")}
           </p>
         </div>
-        {this.state.remarks?null:null}
+        {this.state.remarks?this.showRemarks():null}
       </div>);
   }
 
@@ -57,16 +59,16 @@ class QSLRowContextMenu extends Component<Props, State> {
 
   showRemarks() {
     return (
-      <div className="dialog">
-        <div className="dialog-content">
+      <div className="dialog" onPointerDown={_=>this.setState({remarks: false})}>
+        <div className="dialog-content" onPointerDown={e=>e.stopPropagation()}>
           <div>
-            <i className="material-icons"
+            <i className="material-icons close"
                onClick={e=>this.setState({remarks: false})}>close</i>
           </div>
           <h2>{tl("remarks")}</h2>
-          <p>{(this.props.row.state.pqsl||{remarks:''}).remarks}</p>
+          <p>{(this.props.row.state.pqsl||{remarks:tl('No remarks are provided.')}).remarks}</p>
           <div>
-            <i className="material-icons">edit</i>
+            <i className="material-icons">create</i>
           </div>
         </div>
       </div>)

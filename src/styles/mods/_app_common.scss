@@ -137,3 +137,9 @@ html {
     text-decoration: underline;
   }
 }
+
+.close {
+  &:hover {
+    color: red;
+  }
+}

@@ -47,12 +47,6 @@
       cursor: pointer;
     }
 
-    .close {
-      &:hover {
-        color: red;
-      }
-    }
-
     .sync-button.material-wrapper {
       @include noselect;
     }
