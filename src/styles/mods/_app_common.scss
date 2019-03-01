@@ -1,5 +1,12 @@
 html {
   background: #e2e4f0;
+
+  @include mobile {
+    --is-mobile: yes;
+  }
+  @include desktop {
+    --is-mobile: no;
+  }
 }
 
 .App {

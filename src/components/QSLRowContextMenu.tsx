@@ -18,7 +18,7 @@ class QSLRowContextMenu extends Component<Props> {
         onPointerDown={e=>(e.stopPropagation(),this.close())}>
         <div
           className="clicktrap"
-          style={{left: this.props.pos.x, top: this.props.pos.y}}>
+          style={this.getStyle()}>
           <p
             onPointerDown={e=>e.stopPropagation()}
             onClick={e=>(e.stopPropagation(),this.props.row.remove(),this.close())}>
@@ -31,6 +31,13 @@ class QSLRowContextMenu extends Component<Props> {
           </p>
         </div>
       </div>);
+  }
+
+  getStyle() {
+    if(getComputedStyle(document.body).getPropertyValue("--is-mobile") === "yes") {
+      return {};
+    }
+    return {left: this.props.pos.x, top: this.props.pos.y};
   }
 
   startHover() { this.hovering = true; }
