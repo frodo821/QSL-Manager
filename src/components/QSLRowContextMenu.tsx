@@ -8,10 +8,17 @@ interface Props {
 }
 
 interface State {
-  remarks?: boolean;
+  remarks: boolean;
 }
 
 class QSLRowContextMenu extends Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      remarks: false
+    };
+  }
+
   render() {
     return (
       <div
