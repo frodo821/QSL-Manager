@@ -3,13 +3,15 @@ import QSLRow from "./QSLRow";
 import { tl } from "../multilingual";
 
 interface Props {
-  row: QSLRow
-  pos: {x:number, y:number}
+  row: QSLRow;
+  pos: {x:number, y:number};
 }
 
-class QSLRowContextMenu extends Component<Props> {
-  hovering: boolean = false;
+interface State {
+  remarks?: boolean;
+}
 
+class QSLRowContextMenu extends Component<Props, State> {
   render() {
     return (
       <div
@@ -29,7 +31,13 @@ class QSLRowContextMenu extends Component<Props> {
             onClick={e=>(e.stopPropagation(),this.props.row.setState({editing: "IN-EDITING"}),this.close())}>
             {tl("Edit")}
           </p>
+          <p
+            onPointerDown={e=>e.stopPropagation()}
+            onClick={e=>(e.stopPropagation(),this.setState({remarks: true}))}>
+            {tl("Show remarks")}
+          </p>
         </div>
+        {this.state.remarks?null:null}
       </div>);
   }
 
@@ -39,10 +47,6 @@ class QSLRowContextMenu extends Component<Props> {
     }
     return {left: this.props.pos.x, top: this.props.pos.y};
   }
-
-  startHover() { this.hovering = true; }
-
-  endHover() { this.hovering = false; }
 
   close() { this.props.row.setState({contextMenu: undefined}) }
 }
