@@ -31,7 +31,8 @@ const ja_JP = {
     "download log as textfile": "テキストファイルとしてダウンロード",
     "And then, you can create log sheet here.": "ここから提出する形式のログシートが作成できます。",
     "Choose language": "言語を選択",
-    "Version info": "バージョン情報"
+    "Version info": "バージョン情報",
+    "{} is alredy exists at {}": "{}は{}に既に登録済みです!"
   },
   language: "日本語",
   country: "日本"

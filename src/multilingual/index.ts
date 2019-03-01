@@ -1,7 +1,11 @@
+import '../string';
 import { Translation } from "./types";
 
 const languageTable: {[key: string]: Translation} = {
-  en_US: {} as Translation
+  en_US: {
+    country: "United States",
+    language: "English"
+  } as Translation
 }
 
 var language = "en_US"
@@ -14,33 +18,29 @@ export async function initialize() {
 
 export function changeLanguage(lang: string) {
   if(!languageTable.hasOwnProperty(lang))
-    language = "en_US"
+    language = "en_US";
   else
-    language = lang
+    language = lang;
 }
 
-export function tl(target: string) {
+export function tl(target: string, fmt?: string[] | {[key: string]: string}) {
   if(language === "en_US")
-    return target;
+    return fmt?target.format(fmt):target;
 
   let ld = languageTable[language];
 
   if(!ld || !ld.trans.hasOwnProperty(target)) {
     DEBUG&&console.warn(`'${target}' is not translated in '${language}'`)
-    return target;
+    return fmt?target.format(fmt):target;
   }
-  return ld.trans[target];
+  return fmt?ld.trans[target].format(fmt):ld.trans[target];
 }
 
 export function getCountry() {
-  if(language === "en_US")
-    return "United States"
   return languageTable[language].country;
 }
 
 export function getLanguage() {
-  if(language === "en_US")
-    return "English"
   return languageTable[language].language;
 }
 
@@ -55,5 +55,10 @@ export function addLanguage(lang: Translation, key: string) {
 }
 
 export function listupLanguageVariant() {
-  return Object.keys(languageTable);
+  return Object
+    .keys(languageTable)
+    .map(it=>({
+      lang: `${languageTable[it].language} (${languageTable[it].country})`,
+      value: it
+    }));
 }
