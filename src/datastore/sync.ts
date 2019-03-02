@@ -121,8 +121,18 @@ export async function uploadAll() {
       if(await updatable(tqsl, md))
         await batcher.set(md, other);
     } else {
-      let id = (await FS.room.add(other)).id;
-      FS.application.props.editQSL(qsl, Object.assign({id}, other), "ONLINE_SYNC_EVENT");
+      let docs = await FS.room.where("my", "==", other.my).limit(1).get();
+      if(docs.docs.length === 0) {
+        let id = (await FS.room.add(other)).id;
+        FS.application.props.editQSL(qsl, Object.assign({id}, other), "ONLINE_SYNC_EVENT");
+      } else {
+        let md = docs.docs[0].ref;
+        if(await updatable(tqsl, md))
+        {
+          await batcher.set(md, other);
+          FS.application.props.editQSL(qsl, Object.assign({id: md.id}, other), "ONLINE_SYNC_EVENT");
+        }
+      }
     }
   }
   await batcher.commit();
