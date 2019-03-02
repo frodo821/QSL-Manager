@@ -31,16 +31,19 @@ class QSLRowContextMenu extends Component<Props, State> {
           className="clicktrap"
           style={this.getStyle()}>
           <p
+            className="clickable"
             onPointerDown={e=>e.stopPropagation()}
             onClick={e=>(e.stopPropagation(),this.props.row.remove(),this.close())}>
             {tl("Delete")}
           </p>
           <p
+            className="clickable"
             onPointerDown={e=>e.stopPropagation()}
             onClick={e=>(e.stopPropagation(),this.props.row.setState({editing: "IN-EDITING"}),this.close())}>
             {tl("Edit")}
           </p>
           <p
+            className="clickable"
             onPointerDown={e=>e.stopPropagation()}
             onClick={e=>(e.stopPropagation(),this.setState({remarks: true}))}>
             {tl("Show remarks")}
@@ -59,19 +62,47 @@ class QSLRowContextMenu extends Component<Props, State> {
 
   showRemarks() {
     return (
-      <div className="dialog" onPointerDown={_=>this.setState({remarks: false})}>
+      <div className="dialog" onPointerDown={_=>this.setState({remarks: false, editing_remarks: false})}>
         <div className="dialog-content" onPointerDown={e=>e.stopPropagation()}>
           <div>
-            <i className="material-icons close"
-               onClick={e=>this.setState({remarks: false})}>close</i>
+            <i className="material-icons close clickable no-underline"
+               onClick={e=>this.setState({remarks: false, editing_remarks: false})}>close</i>
           </div>
           <h2>{tl("remarks")}</h2>
-          <p>{(this.props.row.state.pqsl||{remarks:tl('No remarks are provided.')}).remarks}</p>
+          {this.state.editing_remarks?
+            this.remarksEditor():
+            <p>{(this.props.row.state.pqsl||{remarks:tl('No remarks are provided.')}).remarks}</p>}
           <div>
-            <i className="material-icons">create</i>
+            <i onClick={_=>{this.setState({editing_remarks: true})}}
+               style={!this.state.editing_remarks?{display: 'initial'}:{display: 'none'}}
+               className="material-icons clickable no-underline">edit</i>
           </div>
         </div>
       </div>)
+  }
+
+  remarksEditor() {
+    return (
+      <div className="remarks">
+        <div>
+          <input
+            className="remarks-editor"
+            id="remarks-input-box"
+            type="text"
+            onKeyDown={e=>e.key==="Enter"&&this.editDone()}
+            defaultValue={(this.props.row.state.pqsl||{remarks: ''}).remarks}/>
+          </div>
+        <div>
+          <i onClick={_=>this.editDone()}
+             className="material-icons clickable no-underline">done</i>
+        </div>
+      </div>);
+  }
+
+  editDone = () => {
+    let rem = document.getElementById('remarks-input-box') as HTMLInputElement;
+    this.props.row.updateRemarkes(rem.value);
+    this.setState({editing_remarks: false});
   }
 
   close() { this.props.row.setState({contextMenu: undefined}) }
