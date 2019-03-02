@@ -33,11 +33,9 @@ class QSLRow extends Component<QSLProps, OwnState> {
     this.state = {pqsl: this.props.qsl?Object.assign({}, this.props.qsl):null} as OwnState;
   }
 
-  componentDidUpdate() {
-    if(this.state.editing === undefined && this.props.qsl !== this.state.pqsl) {
-      this.setState({pqsl: this.props.qsl||null});
-      console.log("pqsl updated");
-    }
+  componentWillReceiveProps(nextProps: QSLProps, nextContext: any) {
+    super.componentWillReceiveProps?super.componentWillReceiveProps(nextProps, nextContext):null;
+    this.setState({pqsl: nextProps.qsl || null});
   }
 
   render() {
