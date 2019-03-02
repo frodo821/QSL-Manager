@@ -23,7 +23,6 @@ type BodyState = { pqsl: QSL };
 
 type HeadState = { pqsl: null };
 
-
 type OwnState = CommomState & (BodyState | HeadState);
 
 const isBodyState = (state: OwnState): state is BodyState => state.pqsl !== null
@@ -33,6 +32,14 @@ class QSLRow extends Component<QSLProps, OwnState> {
     super(props);
     this.state = {pqsl: this.props.qsl?Object.assign({}, this.props.qsl):null} as OwnState;
   }
+
+  componentDidUpdate() {
+    if(this.state.editing === undefined && this.props.qsl !== this.state.pqsl) {
+      this.setState({pqsl: this.props.qsl||null});
+      console.log("pqsl updated");
+    }
+  }
+
   render() {
     if(!isBodyState(this.state)) {
       return(
