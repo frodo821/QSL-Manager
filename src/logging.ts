@@ -9,23 +9,8 @@ ${it.getHours()}:${it.getMinutes()}`)(qsl.date)} ${qsl.band.frequency} \
 ${qsl.mode} ${qsl.his} ${his[1]} ${his[2]} ${my[1]} ${my[2]}\n`;
 }
 
-export type Summary = {
-  contest_name: string,
-  category: string,
-  callsign: string,
-  totalscore: string,
-  address: string,
-  name: string,
-  tellnum: string,
-  email: string,
-  power: string,
-  comments: string,
-  contest_date: Date,
-  signature: string
-}
-
 export function generateLogSheet(qsls: QSL[]) {
-  return 'DATE (JST) TIME BAND MODE CALLSIGN SENTNo RCVDNo Mlt\n'+qsls.map(format).join('');
+  return 'DATE (JST) TIME BAND MODE CALLSIGN SENTNo RCVDNo\n'+qsls.map(format).join('');
 }
 
 export function downloadLogs(qsls: QSL[]) {
