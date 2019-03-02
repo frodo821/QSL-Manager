@@ -10,7 +10,7 @@ import manager from './parameter';
 import { tl, changeLanguage, listupLanguageVariant, currentLang, initialize as lang_init } from './multilingual';
 
 const APPNAME = "Online QSL Manager"
-const VERSION = "0.0.5a1"
+const VERSION = "0.0.5a2"
 
 type IntrinsicState = {
   contextMenuOpened?: boolean;
