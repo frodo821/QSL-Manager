@@ -9,10 +9,10 @@
 
   & &-content {
     position: absolute;
-    bottom: 30vh;
-    left: 10vw;
-    right: 10vw;
-    min-height: 15rem;
+    top: 5rem;
+    left: 3rem;
+    height: calc(100vh - 12rem);
+    width: calc(100vw - 10rem);
     background: white;
     padding: 1rem 2rem;
   }

@@ -28,8 +28,10 @@
 
     .qsl-row {
       cursor: pointer;
+      word-wrap: break-word;
+      word-break: keep-all;
 
-      input {
+      input:not(.remarks-editor) {
         width: calc(100% - 1rem);
         text-transform: uppercase;
         &::placeholder {
@@ -69,6 +71,7 @@
   right: 0;
   z-index: $Z-FLOW + 500;
   background: transparent;
+  cursor: initial;
 
   .clicktrap {
     @include desktop {
@@ -78,10 +81,10 @@
     }
     @include mobile {
       position: absolute;
-      top: 20vh;
-      bottom: 20vh;
-      right: 20vw;
-      left: 20vw;
+      top: 5rem;
+      left: 5rem;
+      width: calc(100vw - 10rem);
+      height: calc(100vh - 10rem);
 
       p {
         font-size: 140%;
@@ -90,5 +93,15 @@
     background: white;
     box-shadow: 2px 2px 2px 2px rgba(32, 32, 32, 0.8);
     z-index: $Z-FLOW + 510;
+  }
+}
+
+.remarks {
+  & &-editor {
+    font-size: 120%;
+    width: 100%;
+    &:focus {
+      outline: none;
+    }
   }
 }
