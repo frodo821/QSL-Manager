@@ -39,7 +39,8 @@ const ja_JP = {
     "Delete": "削除",
     "Edit": "編集",
     "No remarks are provided.": "備考はありません",
-    "Register": "登録"
+    "Register": "登録",
+    "QSL log successfully registered.": "QSLログを登録しました。"
   },
   language: "日本語",
   country: "日本"
