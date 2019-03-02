@@ -393,7 +393,7 @@ export class App extends Component<Props, IntrinsicState> {
           onKeyDown={this.dispatchKeydown}
           tabIndex={8}
           ref={this.remarks}/>
-        <input type="submit" value="Register"/>
+        <input type="submit" value={tl("Register")}/>
       </form>)
   }
 

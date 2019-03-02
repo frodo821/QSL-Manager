@@ -38,7 +38,8 @@ const ja_JP = {
     "Show remarks": "備考を表示",
     "Delete": "削除",
     "Edit": "編集",
-    "No remarks are provided.": "備考はありません"
+    "No remarks are provided.": "備考はありません",
+    "Register": "登録"
   },
   language: "日本語",
   country: "日本"
