@@ -40,7 +40,15 @@ const ja_JP = {
     "Edit": "編集",
     "No remarks are provided.": "備考はありません",
     "Register": "登録",
-    "QSL log successfully registered.": "QSLログを登録しました。"
+    "QSL log successfully registered.": "QSLログを登録しました。",
+    "Do you want to disconnect from sync room?": "クラウドから切断して同期を終了しますか？",
+    "Yes, now": "はい、切断します",
+    "No thanks": "いいえ、やめておきます",
+    "Enter sync room ID": "同期IDを入力",
+    "When sync room ID is blank, it will create new one!": "同期IDを空白にすると、新しく同期IDを開始します。",
+    "Sync room ID": "同期ID",
+    "Connect!": "接続",
+    "Cancel": "キャンセル"
   },
   language: "日本語",
   country: "日本"
