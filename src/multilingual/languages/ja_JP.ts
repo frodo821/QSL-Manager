@@ -3,7 +3,8 @@ import * as multilingual from '../index';
 
 const ja_JP = {
   trans: {
-    "Close form": "閉じる",
+    "Close form": "入力欄を閉じる",
+    "Open form": "入力欄を開く",
     "His call sign (I sent)": "自局のコールサイン",
     "His QTH (I sent)": "自局の運用場所",
     "His operator (I sent)": "自局の運用者の名前",
@@ -36,7 +37,8 @@ const ja_JP = {
     "Could not sync via cloud: unknown sync room ID {}": "同期できませんでした。理由: 不明な同期ID {}",
     "Show remarks": "備考を表示",
     "Delete": "削除",
-    "Edit": "編集"
+    "Edit": "編集",
+    "No remarks are provided.": "備考はありません"
   },
   language: "日本語",
   country: "日本"
