@@ -48,7 +48,8 @@ const ja_JP = {
     "When sync room ID is blank, it will create new one!": "同期IDを空白にすると、新しく同期IDを開始します。",
     "Sync room ID": "同期ID",
     "Connect!": "接続",
-    "Cancel": "キャンセル"
+    "Cancel": "キャンセル",
+    "Sync URL Copied!": "同期URLをコピーしました！"
   },
   language: "日本語",
   country: "日本"
