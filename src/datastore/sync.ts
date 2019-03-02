@@ -106,7 +106,7 @@ function findQSL(my: string) {
 
 async function updatable(qsl: QSL, doc: firebase.firestore.DocumentReference) {
   let date = (await doc.get()).get('date') as number | null;
-  return !(date && new Date(date) < qsl.date);
+  return !(date && new Date(date) > qsl.date);
 }
 
 export async function uploadAll() {
