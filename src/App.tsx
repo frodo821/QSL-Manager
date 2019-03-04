@@ -26,6 +26,16 @@ type IntrinsicState = {
 
 type Props = State & ActionDispatcher;
 
+/**
+ * @param path A path-like string
+ * @return Absolute path
+ */
+function abspath(path: string) {
+  let a = document.createElement('a');
+  a.href = path;
+  return a.href;
+}
+
 export class App extends Component<Props, IntrinsicState> {
   my: React.RefObject<HTMLInputElement>;
   my_qth: React.RefObject<HTMLInputElement>;
@@ -237,7 +247,7 @@ export class App extends Component<Props, IntrinsicState> {
   copyURL = (_: React.MouseEvent) => {
     let input = document.createElement('input');
     document.body.appendChild(input);
-    input.value = `https://pages.tech-frodo.xyz/#sync=${getSyncId()}`;
+    input.value = abspath(`#sync=${getSyncId()}`);
     input.select();
     document.execCommand('copy');
     this.setState({input_msg: {content: tl("Sync URL Copied!"), type: "info"}});
