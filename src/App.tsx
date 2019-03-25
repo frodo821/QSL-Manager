@@ -8,9 +8,10 @@ import { initialize, getSyncId, isConnected } from './datastore/sync';
 import { downloadLogs } from './logging';
 import manager from './parameter';
 import { tl, changeLanguage, listupLanguageVariant, currentLang, initialize as lang_init } from './multilingual';
+import LicenseView from './components/LicenseView';
 
 const APPNAME = "Online QSL Manager"
-const VERSION = "1.0.2"
+const VERSION = "1.1.0"
 
 type IntrinsicState = {
   contextMenuOpened?: boolean;
@@ -22,6 +23,7 @@ type IntrinsicState = {
   forms_hidden?: boolean;
   sync_state?: "REQUESTED" | "SYNCHRONIZING";
   settings?: boolean;
+  license?: boolean;
 }
 
 type Props = State & ActionDispatcher;
@@ -296,6 +298,7 @@ export class App extends Component<Props, IntrinsicState> {
         {this.state.sync_state==="REQUESTED"?!isConnected()?this.createSyncDialog():this.createUnsyncDialog():null}
         {this.state.settings?this.createSettings():null}
         {!this.state.forms_hidden?this.createForm():null}
+        {this.state.license?LicenseView(this):null}
       </div>
     );
   }
@@ -469,7 +472,9 @@ export class App extends Component<Props, IntrinsicState> {
               {listupLanguageVariant().map(it=><option key={it.value} value={it.value}>{it.lang}</option>)}
             </select>
           </div>
-          <div className="material-wrapper settings-group">
+          <div
+            className="material-wrapper settings-group"
+            onClick={_=>this.setState({license: true})}>
             <i className="material-icons">info</i>
             {tl("Version info")}: {APPNAME} v{VERSION}
           </div>

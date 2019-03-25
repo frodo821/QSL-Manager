@@ -49,7 +49,9 @@ const ja_JP = {
     "Sync room ID": "同期ID",
     "Connect!": "接続",
     "Cancel": "キャンセル",
-    "Sync URL Copied!": "同期URLをコピーしました！"
+    "Sync URL Copied!": "同期URLをコピーしました！",
+    "Open Source License Informations": "オープンソースのライセンス情報",
+    "Those are the open source libraries I use to make this application:": "これらのオープンソースライブラリを使ってこのアプリは制作されました"
   },
   language: "日本語",
   country: "日本"
