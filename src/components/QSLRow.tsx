@@ -143,7 +143,7 @@ class QSLRow extends Component<QSLProps, OwnState> {
           <input
             type="text"
             onChange={this.onBandChanged}
-            value={(typeof this.state.t_band !== 'undefined' && this.state.t_band) || (qsl.band.frequency + qsl.band.range)}/>
+            value={(typeof this.state.t_band !== 'undefined' && this.state.t_band) || ((qsl.band.frequency||'') + qsl.band.range)}/>
         </td>
         <td className="mode">
           <select
@@ -178,7 +178,7 @@ class QSLRow extends Component<QSLProps, OwnState> {
 
   onKeyDown = (evt: React.KeyboardEvent<HTMLElement>) => {
     if(evt.key !== "Enter") return;
-    if(!this.state.t_band) {
+    if(!this.state.t_band || (this.props.qsl || {band: {frequency: 0}}).band.frequency != 0) {
       this.setState(() => ({editing: undefined}));
       if(this.props.editQSL && this.props.qsl && isBodyState(this.state)) {
         let qsl = Object.assign(this.state.pqsl, {
@@ -206,10 +206,10 @@ class QSLRow extends Component<QSLProps, OwnState> {
     this.setState({t_band: evt.target.value})
     if(this.props.qsl) {
       if(this.props.qsl.his_no){
-        let m = evt.target.value.match(/([0-9]*(?:\.[0-9]+)?)?([kMGT]?Hz)/);
+        let m = evt.target.value.match(/([0-9]*(?:\.[0-9]+)?)([kMGT]?Hz)/);
         if(m) {
           console.log(m);
-          this.props.qsl.band.frequency = parseInt(m[1]) || 7;
+          this.props.qsl.band.frequency = parseInt(m[1]) || 0;
           this.props.qsl.band.range = m[2] as BandRange
           this.setState({t_band: undefined})
         }
