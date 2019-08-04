@@ -209,7 +209,7 @@ class QSLRow extends Component<QSLProps, OwnState> {
         let m = evt.target.value.match(/([0-9]*(?:\.[0-9]+)?)([kMGT]?Hz)/);
         if(m) {
           console.log(m);
-          this.props.qsl.band.frequency = parseInt(m[1]) || 0;
+          this.props.qsl.band.frequency = parseFloat(m[1]) || 0;
           this.props.qsl.band.range = m[2] as BandRange
           this.setState({t_band: undefined})
         }
