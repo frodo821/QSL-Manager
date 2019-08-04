@@ -371,7 +371,7 @@ export class App extends Component<Props, IntrinsicState> {
           <div className="rad-freq-mode">
             <input required={true}
               type="text"
-              value={this.state.t_freq||this.props.myqsl.band.frequency}
+              value={this.state.t_freq||(this.state.t_freq === undefined?this.props.myqsl.band.frequency:'')}
               minLength={1}
               onBlur={this.updateBandFreq}
               onChange={this.changeBandFreq}/>
