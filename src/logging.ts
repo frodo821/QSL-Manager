@@ -10,7 +10,7 @@ ${qsl.mode} ${qsl.my} ${his[1]} ${his[2]} ${my[1]} ${my[2]}\n`;
 }
 
 export function generateLogSheet(qsls: QSL[]) {
-  return 'DATE (JST) TIME BAND MODE CALLSIGN SENTNo RCVDNo\n'+qsls.map(format).join('');
+  return 'DATE(JST) TIME BAND MODE CALLSIGN SENTNo RCVDNo\n'+qsls.map(format).join('');
 }
 
 export function downloadLogs(qsls: QSL[]) {
