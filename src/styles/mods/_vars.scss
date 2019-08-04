@@ -1,3 +1,12 @@
+$theme-color: rgb(224, 192, 144) !default;
+$theme-color-fore: rgb(30, 30, 30) !default;
+$key-color:  rgb(5, 0, 49) !default;
+$key-color-fore: rgb(212, 211, 153) !default;
+$background-color: wheat !default;
+$font-size: 16px !default;
+$line-height: 1rem !default;
+$nav-width: 24rem !default;
+$nav-width-mobile: 100vw !default;
 $breakpoints: (
     'mobile': 'screen and (max-width: 960px)',
     'desktop': 'screen and (min-width: 961px)'
