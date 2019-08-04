@@ -11,7 +11,7 @@ import { tl, changeLanguage, listupLanguageVariant, currentLang, initialize as l
 import LicenseView from './components/LicenseView';
 
 const APPNAME = "Online QSL Manager"
-const VERSION = "1.1.0"
+const VERSION = "1.2.0"
 
 type IntrinsicState = {
   contextMenuOpened?: boolean;
@@ -305,109 +305,106 @@ export class App extends Component<Props, IntrinsicState> {
 
   createForm() {
     return (
-      <form onSubmit={this.onSubmitForm} id="qsl-form">
-        <div className="radio">
+      <div id="qsl-form">
+        <form onSubmit={this.onSubmitForm}>
+          <div className="radio">
+            <input
+              required={true}
+              type="text"
+              className="uppercased"
+              onChange={this.changeMyCS}
+              onKeyDown={this.dispatchKeydown}
+              value={this.props.myqsl.his}
+              tabIndex={1}
+              placeholder={tl("His call sign (I sent)")}/>
+            <input
+              type="text"
+              onChange={this.changeMyQTH}
+              onKeyDown={this.dispatchKeydown}
+              tabIndex={1}
+              value={this.props.myqsl.his_qth || ''}
+              placeholder={tl("His QTH (I sent)")}/>
+            <input
+              type="text"
+              onChange={this.changeMyOP}
+              onKeyDown={this.dispatchKeydown}
+              tabIndex={2}
+              value={this.props.myqsl.his_op || ''}
+              placeholder={tl("His operator (I sent)")}/>
+            <input
+              type="text"
+              onChange={this.changeMyCnum}
+              onKeyDown={this.dispatchKeydown}
+              tabIndex={3}
+              className="uppercased"
+              value={this.props.myqsl.his_no || ''}
+              placeholder={tl("His contest number (I sent)")}/>
+            <input
+              required={true}
+              type="text"
+              ref={this.my}
+              onKeyDown={this.dispatchKeydown}
+              tabIndex={4}
+              onBlur={this.onCheckExists}
+              className="uppercased"
+              placeholder={tl("My call sign (he sent)")}/>
+            <input
+              type="text"
+              ref={this.my_qth}
+              onKeyDown={this.dispatchKeydown}
+              tabIndex={5}
+              placeholder={tl("My QTH (he sent)")}/>
+            <input
+              type="text"
+              ref={this.my_op}
+              onKeyDown={this.dispatchKeydown}
+              tabIndex={6}
+              placeholder={tl("My operator (he sent)")}/>
+            <input
+              type="text"
+              ref={this.my_no}
+              onKeyDown={this.dispatchKeydown}
+              tabIndex={7}
+              className="uppercased"
+              placeholder={tl("My contest number (he sent)")}/>
+          </div>
+          <div className="rad-freq-mode">
+            <input required={true}
+              type="text"
+              value={this.state.t_freq||this.props.myqsl.band.frequency}
+              minLength={1}
+              onBlur={this.updateBandFreq}
+              onChange={this.changeBandFreq}/>
+            <select
+              value={this.props.myqsl.band.range}
+              onChange={this.changeBandRange}>
+              <option>Hz</option>
+              <option>kHz</option>
+              <option>MHz</option>
+              <option>GHz</option>
+              <option>THz</option>
+            </select>
+            <select
+              onChange={this.changeMode}
+              value={this.props.myqsl.mode}>
+              <optgroup label="voice">
+                <option>AM</option>
+                <option>FM</option>
+                <option>SSB</option>
+              </optgroup>
+              <option>CW</option>
+            </select>
+          </div>
           <input
-            required={true}
             type="text"
-            className="uppercased"
-            onChange={this.changeMyCS}
+            placeholder={tl("remarks")}
+            className="remarks"
             onKeyDown={this.dispatchKeydown}
-            value={this.props.myqsl.his}
-            tabIndex={1}
-            placeholder={tl("His call sign (I sent)")}
-            pattern="([Jj][A-Sa-s]|[78][J-Nj-n])([0-9])([0-9A-Za-z]{2,3}(?:/[0-9])?)"/>
-          <input
-            type="text"
-            onChange={this.changeMyQTH}
-            onKeyDown={this.dispatchKeydown}
-            tabIndex={1}
-            value={this.props.myqsl.his_qth || ''}
-            placeholder={tl("His QTH (I sent)")}/>
-          <input
-            type="text"
-            onChange={this.changeMyOP}
-            onKeyDown={this.dispatchKeydown}
-            tabIndex={2}
-            value={this.props.myqsl.his_op || ''}
-            placeholder={tl("His operator (I sent)")}/>
-          <input
-            type="text"
-            onChange={this.changeMyCnum}
-            onKeyDown={this.dispatchKeydown}
-            tabIndex={3}
-            className="uppercased"
-            value={this.props.myqsl.his_no || ''}
-            placeholder={tl("His contest number (I sent)")}
-            pattern="[1-5][1-9]{1,2}\d{2}[K-Nk-n]"/>
-          <input
-            required={true}
-            type="text"
-            ref={this.my}
-            onKeyDown={this.dispatchKeydown}
-            tabIndex={4}
-            onBlur={this.onCheckExists}
-            className="uppercased"
-            placeholder={tl("My call sign (he sent)")}
-            pattern="([Jj][A-Sa-s]|[78][J-Nj-n])([0-9])([0-9A-Za-z]{2,3}(?:/[0-9])?)"/>
-          <input
-            type="text"
-            ref={this.my_qth}
-            onKeyDown={this.dispatchKeydown}
-            tabIndex={5}
-            placeholder={tl("My QTH (he sent)")}/>
-          <input
-            type="text"
-            ref={this.my_op}
-            onKeyDown={this.dispatchKeydown}
-            tabIndex={6}
-            placeholder={tl("My operator (he sent)")}/>
-          <input
-            type="text"
-            ref={this.my_no}
-            onKeyDown={this.dispatchKeydown}
-            tabIndex={7}
-            className="uppercased"
-            placeholder={tl("My contest number (he sent)")}
-            pattern="[1-5][1-9]{1,2}\d{2}[K-Nk-n]"/>
-        </div>
-        <div className="rad-freq-mode">
-          <input required={true}
-            type="text"
-            value={this.state.t_freq||this.props.myqsl.band.frequency}
-            minLength={1}
-            pattern="[0-9]*\.[0-9]+|[0-9]+(\.[0-9]*)?"
-            onBlur={this.updateBandFreq}
-            onChange={this.changeBandFreq}/>
-          <select
-            value={this.props.myqsl.band.range}
-            onChange={this.changeBandRange}>
-            <option>Hz</option>
-            <option>kHz</option>
-            <option>MHz</option>
-            <option>GHz</option>
-            <option>THz</option>
-          </select>
-          <select
-            onChange={this.changeMode}
-            value={this.props.myqsl.mode}>
-            <optgroup label="voice">
-              <option>AM</option>
-              <option>FM</option>
-              <option>SSB</option>
-            </optgroup>
-            <option>CW</option>
-          </select>
-        </div>
-        <input
-          type="text"
-          placeholder={tl("remarks")}
-          className="remarks"
-          onKeyDown={this.dispatchKeydown}
-          tabIndex={8}
-          ref={this.remarks}/>
-        <input type="submit" value={tl("Register")}/>
-      </form>)
+            tabIndex={8}
+            ref={this.remarks}/>
+          <input type="submit" value={tl("Register")}/>
+        </form>
+      </div>)
   }
 
   createHeader() {

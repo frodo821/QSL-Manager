@@ -5,7 +5,7 @@ function format(qsl: QSL) {
   let my = (qsl.my_no || '').match(/^([1-5][1-9]{1,2})(\d{2}[K-Nk-n])$/);
   if(!my || !his) return '';
   return `${(it=>`${it.getFullYear()}-${(it.getMonth() + 1).toString().padStart(2, '0')}-${it.getDate().toString().padStart(2, '0')} \
-${it.getHours()}:${it.getMinutes()}`)(qsl.date)} ${qsl.band.frequency} \
+${it.getHours().toString().padStart(2, '0')}:${it.getMinutes().toString().padStart(2, '0')}`)(qsl.date)} ${qsl.band.frequency} \
 ${qsl.mode} ${qsl.his} ${his[1]} ${his[2]} ${my[1]} ${my[2]}\n`;
 }
 
