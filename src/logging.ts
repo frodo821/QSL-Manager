@@ -6,7 +6,7 @@ function format(qsl: QSL) {
   if(!my || !his) return '';
   return `${(it=>`${it.getFullYear()}-${(it.getMonth() + 1).toString().padStart(2, '0')}-${it.getDate().toString().padStart(2, '0')} \
 ${it.getHours().toString().padStart(2, '0')}:${it.getMinutes().toString().padStart(2, '0')}`)(qsl.date)} ${qsl.band.frequency} \
-${qsl.mode} ${qsl.his} ${his[1]} ${his[2]} ${my[1]} ${my[2]}\n`;
+${qsl.mode} ${qsl.my} ${his[1]} ${his[2]} ${my[1]} ${my[2]}\n`;
 }
 
 export function generateLogSheet(qsls: QSL[]) {
