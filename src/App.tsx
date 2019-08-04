@@ -11,7 +11,7 @@ import { tl, changeLanguage, listupLanguageVariant, currentLang, initialize as l
 import LicenseView from './components/LicenseView';
 
 const APPNAME = "Online QSL Manager"
-const VERSION = "1.2.0"
+const VERSION = "1.2.1"
 
 type IntrinsicState = {
   contextMenuOpened?: boolean;

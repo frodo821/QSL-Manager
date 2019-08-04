@@ -65,7 +65,9 @@ class QSLRow extends Component<QSLProps, OwnState> {
           className="qsl-row"
           onClick={this.onClick}>
           <td className="date">{qsl.date.toLocaleDateString()}</td>
-          <td className="time">{(it=>`${it.getHours()}:${it.getMinutes()}`)(qsl.date)}</td>
+          <td className="time">
+            {(it=>`${it.getHours().toString().padStart(2, '0')}:${it.getMinutes().toString().padStart(2, '0')}`)(qsl.date)}
+          </td>
           <td className="call-sign">{qsl.his}</td>
           <td className="qth">{qsl.his_qth || '-'}</td>
           <td className="op">{qsl.his_op || '-'}</td>
