@@ -9,6 +9,7 @@ import { downloadLogs } from './logging';
 import manager from './parameter';
 import { tl, changeLanguage, listupLanguageVariant, currentLang, initialize as lang_init } from './multilingual';
 import LicenseView from './components/LicenseView';
+import { isMobile } from './utils';
 
 const APPNAME = "Online QSL Manager"
 const VERSION = "1.2.3"
@@ -180,7 +181,7 @@ export class App extends Component<Props, IntrinsicState> {
       return;
     }
     let next = document.querySelector('input[tabindex="4"]') as HTMLElement | null;
-    let form = document.getElementById('qsl-form') as HTMLFormElement | null;
+    let form = document.querySelector('#qsl-form form') as HTMLFormElement | null;
     if(!form || form.checkValidity()) {
       this.onSubmitForm();
     } else {
@@ -403,6 +404,9 @@ export class App extends Component<Props, IntrinsicState> {
             tabIndex={8}
             ref={this.remarks}/>
           <input type="submit" value={tl("Register")}/>
+          <button
+              className="close-form-mobile"
+              onClick={e=>(e.stopPropagation(), this.setState({forms_hidden: true}))}>{tl("Close form")}</button>
         </form>
       </div>)
   }
