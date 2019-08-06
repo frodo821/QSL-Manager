@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import QSLRow from "./QSLRow";
 import { tl } from "../multilingual";
+import { isMobile } from "../utils";
 
 interface Props {
   row: QSLRow;
@@ -48,6 +49,12 @@ class QSLRowContextMenu extends Component<Props, State> {
             onClick={e=>(e.stopPropagation(),this.setState({remarks: true}))}>
             {tl("Show remarks")}
           </p>
+          {isMobile()?<p
+            className="clickable"
+            onPointerDown={e=>e.stopPropagation()}
+            onClick={e=>(e.stopPropagation(),this.close())}>
+            {tl("Close Menu")}
+          </p>:null}
         </div>
         {this.state.remarks?this.showRemarks():null}
       </div>);

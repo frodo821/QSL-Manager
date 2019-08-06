@@ -52,7 +52,8 @@ const ja_JP = {
     "Sync URL Copied!": "同期URLをコピーしました！",
     "Open Source License Informations": "オープンソースのライセンス情報",
     "Those are the open source libraries I use to make this application:": "これらのオープンソースライブラリを使ってこのアプリは制作されました",
-    "Has Remarks":"備考の有無"
+    "Has Remarks":"備考の有無",
+    "Close Menu": "閉じる"
   },
   language: "日本語",
   country: "日本"
